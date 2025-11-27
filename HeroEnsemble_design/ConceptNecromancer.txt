@@ -1,0 +1,167 @@
+_______________________________________________________________________________________________________________________________________________________________________
+_______________________________________________________________________________________________________________________________________________________________________
+
+===========================================================================
+================================NECROMANCER================================
+===========================================================================
+WC3 Models: 	https://www.hiveworkshop.com/threads/necromancer.305771/#resource-78782
+
+[Q] - Raise Minion (25 mana, cooldown varies)
+Raises a Skeletal Minion. Strength of minions increases with level, and the cooldown shortens (i.e. max number of minions-at-a-time increases).
+(Minions auto controlled)
+
+[W] - Dark Harvest (50 Mana, short cooldown)			
+Drains the essence of nearby enemies, dealing light damage to all nearby enemies, healing [Hero] for 25% of the damage dealt.
+This healing is increased by 5% for every active Skeletal Minion.
+ - If an enemy dies within 5 seconds of being damaged by Dark Harvest, [Hero] regains 25 mana.
+
+[E] - Reaper's Mark (70 Mana, 11 seconds cooldown)	
+Mark an enemy for death. The target takes heavy damage over the next 7 seconds.
+[Hero] is healed for 75% of damage dealt to Marked enemies.
+
+[R] (level 6) - Bone Spikes (80 mana, medium cooldown)
+Causes spikes to emerge from the ground down a line, dealing medium damage and briefly stunning enemies hit.
+
+[Z] (level 10) - Onslaught (50 mana, medium cooldown)
+Enters a killing frenzy, gaining moderate attack rate and movement speed for 12 seconds. During this time your attacks also cleave.
+Killing a [Boss] or [Heavy] enemy will instantly proc this ability for free.
+
+[X] (level 15) - Ghoulish Feast (125 mana, medium-long cooldown)			(Single level, unit-ability, auto-unlocked at 15)
+Passive: Gain Phsyical Vampirism
+Active: Temporarily gain +5 to all Attributes for every nearby enemy, up to +50 stats. 
+Nearby Skeletal Minions also give extra stats (not counting towards maximum).
+	- Activating this ability instantly casts a free Dark Harvest.
+
+[F] - Hero Abilities (learn)
+
+
+---------Effects and Icons
+
+[Q]
+Icon: 	https://www.hiveworkshop.com/threads/btnnecromancy2.275303/#resource-65899
+Effect: 	Regular Animate Dead
+
+[W]
+Icon: 	https://www.hiveworkshop.com/threads/btnharvest.275210/#resource-65896
+Effect: 	https://www.hiveworkshop.com/threads/dark-harvest.220939/
+           or https://www.hiveworkshop.com/threads/nether-blast.318806/
+
+[E]
+Icon: 	https://www.hiveworkshop.com/threads/btnfrostpresence.279706/#resource-66110
+	or: https://www.hiveworkshop.com/threads/btncrdeath.174904/#resource-59129
+Effect: 
+
+[R]
+Icon:	Regular Impale
+Effect:	Regular Impale
+
+[Z]
+Icon: 	https://www.hiveworkshop.com/threads/btnbloodlust.116106/#resource-53888
+Effect: 	https://www.hiveworkshop.com/threads/blood-presence.124159/#resource-27004	
+	or	
+	https://www.hiveworkshop.com/threads/markofthecrimsonkingoverheadbuff-auraeffect.265516/#resource-37024
+
+[X]
+Icon: 		https://www.hiveworkshop.com/threads/btnsoulstrike.55973/#resource-49118
+Effect: 		https://www.hiveworkshop.com/threads/necroticblast.236381/#resource-34644
+Missile (absorb): 	https://www.hiveworkshop.com/threads/pursuer.257469/
+Passive: 		https://www.hiveworkshop.com/threads/brilliance.50443/
+
+Devil's Feast icon: 	https://www.hiveworkshop.com/threads/soul-burn-new.94372/#resource-72995
+Devil's Feast effect: 	https://www.hiveworkshop.com/threads/fire-nova.50408/
+
+Marcos DAB, Jesushipster, Power, bu3ny, JetFangInferno, Ramza, LordGandulfo88, Kimbo, Dionesiist, JollyD, San, Mythic, PrinceYaser, PROXY, Kellym0, 
+Darkfang, Kellym0, Vortigon, UgoUgo, tonic, CRAZYRUSSIAN, 
+
+=========================================================================
+=================================ITEM SETS=================================
+=========================================================================
+
+Reaper's Raiment
+(2) - When Dark Harvest kills an enemy, you heal for 5% of that enemy's max health.
+(4) - If an enemy dies while affected by Reaper's Mark the cooldown and mana cost are refunded.
+
+Dorrtog's Garment
+(2) - Your Minions now passively burn nearby enemies.
+(4) - Ghoulish Feast becomes Devil's Feast, which blasts nearby enemies, sacrificing your own Minions to deal terrible, terrible damage.
+
+Regalia of Pestilence
+(2) - Passively explode nearby corpses, dealing damage to enemies, while healing you and your Minions.
+(4) - Falling below 30% health instantly consumes a Minion to regain 30% health. If no Minion is available, restores only 20%.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+				???Phylactery Fragment		???
+				???(3) - Assemble the phylactery	???
+???========================================================================================???
+???================================HIDDEN SUPER CLASS: LICH================================???
+???========================================================================================???
+Unlocked by gathering all 3 phylactery pieces. Is now ranged. Has inherent splash damage.
+
+WC3 Model:	https://www.hiveworkshop.com/threads/inquisitormalendis.200540/#resource-31724
+
+[Q] - Bind Servant (25 mana, cooldown varies)
+Raises a (more powerful) Undead Minion. Strength of minions increases with level, and the cooldown shortens (i.e. max number of minions-at-a-time increases)
+(Minions auto controlled)
+
+[W] - Soul Harvest (50 Mana, short cooldown)
+Drains enemies in target area, applying a slowing effect (duration = cooldown) and dealing moderate damage, healing [Hero] for 25% of the damage dealt, and regaining
+7 mana for every target afflicted.
+//This ability benefits from the (2)-piece bonus of Reaper's Raiment
+
+[E] - Mortal Coil (70 Mana, 13 seconds cooldown)
+Curses a target enemy, dealing heavy damage over 12 seconds, causing them to take an additional 15% damage from [Hero] and Minions.
+You restore health equal to 75% of damage dealt to the target.
+//This ability beneftis from the (4)-piece bonus of Reaper's Raiment
+
+[R] - Abomination (100 mana, long cooldown)
+Spawns a controllable undead behemoth at target location, taunting enemies and dealing massive damage as it emerges.
+The Abomination lasts for up to 30 seconds, and absorbs 50% of damage taken by [Hero].
+//This, being a Minion, benefits from (2)-piece bonus of Dorrtog's Garment
+//This Minion will always be (attempted) consumed last for (4)-piece Regalia of Pestilence. If consumed, it restores 60% health, instead of 30%.
+
+[Z] - Death and Decay (60 mana, 12 seconds cooldown)
+Releases a miasmic plague upon target area, dealing damage to enemies caught within, and healing your minions. Lasts 8 seconds.
+(Does not need to be channeled)
+
+[X] - Apocalypse (200 mana, very long cooldown)
+Passive: (One-off) permanently lower the cooldown of Soul Harvest by 30%.
+Active: Freezes (roots) enemies in target area. If any target dies while rooted they violently explode, dealing damage to nearby enemies.
+As enemies die, [Hero] absorbs their soul, gaining +1 permanent Intelligence
+	-Does not root Bosses, but instatly burns 5% of their health, healing [Hero] for the same amount
+//This ability deals on-cast fire damage if you have the (4)-piece bonus of Dorrtog's Garment
+
+[F] - Hero Abilities (learn)
+
+
+Hero glow for units... https://www.hiveworkshop.com/threads/aura.49241/

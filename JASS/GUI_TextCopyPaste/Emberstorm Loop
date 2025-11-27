@@ -1,0 +1,61 @@
+Emberstorm loop
+    Events
+        Time - Every 0.50 seconds of game time
+    Conditions
+    Actions
+        For each (Integer Emst_MUI3) from 1 to Emst_MUI1, do (Actions)
+            Loop - Actions
+                -------- Convenience integer --------
+                Set VariableSet Emst_i = Emst_MUI2[Emst_MUI3]
+                -------- Update --------
+                Set VariableSet Emst_dur[Emst_i] = (Emst_dur[Emst_i] - 0.50)
+                If (All Conditions are True) then do (Then Actions) else do (Else Actions)
+                    If - Conditions
+                        (Emst_caster[Emst_i] is alive) Equal to True
+                        Emst_dur[Emst_i] Greater than 0.00
+                    Then - Actions
+                        -------- Area damage --------
+                        Set VariableSet Emst_tempp = (Position of Emst_caster[Emst_i])
+                        Set VariableSet Emst_tempug = (Units within Emst_aoe[Emst_i] of Emst_tempp.)
+                        Unit Group - Pick every unit in Emst_tempug and do (Actions)
+                            Loop - Actions
+                                Set VariableSet Emst_pickedu = (Picked unit)
+                                If (All Conditions are True) then do (Then Actions) else do (Else Actions)
+                                    If - Conditions
+                                        (Emst_pickedu is Magic Immune) Equal to False
+                                        (Emst_pickedu is dead) Equal to False
+                                        (Emst_pickedu belongs to an enemy of (Owner of Emst_caster[Emst_i]).) Equal to True
+                                    Then - Actions
+                                        Unit - Cause Emst_caster[Emst_i] to damage Emst_pickedu, dealing Emst_dmg[Emst_i] damage of attack type Spells and damage type Normal
+                                        Special Effect - Create a special effect attached to the origin of Emst_pickedu using Abilities\Spells\Human\Feedback\SpellBreakerAttack.mdl
+                                        Special Effect - Destroy (Last created special effect)
+                                    Else - Actions
+                        Custom script:   call DestroyGroup(udg_Emst_tempug)
+                        -------- Seven Tongues of Pytho Addition --------
+                        If (All Conditions are True) then do (Then Actions) else do (Else Actions)
+                            If - Conditions
+                                HF_activeHellion[(Custom value of Emst_caster[Emst_i])] Equal to 3
+                            Then - Actions
+                                If (All Conditions are True) then do (Then Actions) else do (Else Actions)
+                                    If - Conditions
+                                        (Random real number between 0.00 and 1.00) Greater than or equal to 0.60
+                                    Then - Actions
+                                        Unit - Create 1 Flame Tornado for (Owner of Emst_caster[Emst_i]) at Emst_tempp facing Default building facing degrees
+                                        Set VariableSet Emst_tornado = (Last created unit)
+                                        Unit - Set level of Emberstorm Immolation  for Emst_tornado to (Level of Hellion: Emberstorm  for Emst_caster[Emst_i])
+                                        Unit - Add a (Random real number between 3.00 and 5.00) second Generic expiration timer to (Last created unit)
+                                    Else - Actions
+                            Else - Actions
+                        Custom script:   call RemoveLocation(udg_Emst_tempp)
+                    Else - Actions
+                        -------- Recycle indices --------
+                        Set VariableSet Emst_MUI2[Emst_MUI3] = Emst_MUI2[Emst_MUI1]
+                        Set VariableSet Emst_MUI2[Emst_MUI1] = Emst_i
+                        Set VariableSet Emst_MUI1 = (Emst_MUI1 - 1)
+                        Set VariableSet Emst_MUI3 = (Emst_MUI3 - 1)
+                        If (All Conditions are True) then do (Then Actions) else do (Else Actions)
+                            If - Conditions
+                                Emst_MUI1 Equal to 0
+                            Then - Actions
+                                Trigger - Turn off (This trigger)
+                            Else - Actions

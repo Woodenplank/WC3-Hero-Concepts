@@ -1,0 +1,53 @@
+======================================================================
+================================Astromancer=============================
+======================================================================
+
+Hero Model (WC3)				
+
+
+
+[Q] - Nebula (70 mana, medium cooldown)
+A churning vortex of stardust deals medium DPS to enemies within target area, lasting 7 seconds.
+While active, the Nebula slows enemy movement and continually summons Star Sprites.
+
+[W] - Falling Star (80 mana, medium cooldown)
+Sends a star descending upon target area, dealing high damage on impact.
+A Celestial spawns from the crater to deal medium DPS to nearby enemies for a brief duration.
+
+[E] - Dark Veil (60 mana, 12 seconds cooldown)
+Shroud yourself in Dark Matter, gaining bonus armor and movement speed and restoring a small amount of hit points.
+Lasts 5 seconds.
+
+[R] (level 6) - Nether Weaver (85 mana, low cooldown)
+Siphon energy from enemies near you, or a currently active Celestial, dealing medium damage and gaining shields equal to 
+30% of the damage dealt.
+
+[Z] (level 10) - Arcane Almanac (No mana, 30 seconds cooldown)
+Passive: 	All ability damage has a chance to critically hit, dealing 150% normal damage.
+		The number of active Star Sprites increases this chance.
+Active: 	Empower your next Falling Star. Guarantees a crit, gains 5% bonus damage per active Sprite, and the Celestial
+		lasts 30% longer.
+
+
+[X] (level 15) - Collapsing Sun (200 mana, long cooldown)
+Spawns a Collapsing Sun at target location, burning nearby enemies for terrible, terrible damage.
+If hit with Falling Star, it collapses to a Black Hole, which pulls in nearby enemies, dealing high damage.
+
+[F] - Hero Abilities (learn)
+
+*Note that, for WC3, the design of Arcane Almanac requires a Damage Detection Engine
+=======================================================================
+================================ITEM SETS==============================
+=======================================================================
+
+----
+(2) - 
+(4) - 
+
+----
+(2) - 
+(4) - 
+
+----
+(2) - 
+(4) - 

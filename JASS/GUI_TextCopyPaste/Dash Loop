@@ -1,0 +1,54 @@
+Dash loop
+    Events
+        Time - Every 0.05 seconds of game time
+    Conditions
+    Actions
+        For each (Integer Dash_MUI3) from 1 to Dash_MUI1, do (Actions)
+            Loop - Actions
+                -------- ai is for "anti-inconvenicence" (integer) --------
+                Set VariableSet Dash_ai = Dash_MUI2[Dash_MUI3]
+                --------   --------
+                Set VariableSet Dash_tempp[1] = (Position of Dash_caster[Dash_ai])
+                If (All Conditions are True) then do (Then Actions) else do (Else Actions)
+                    If - Conditions
+                        (Distance between Dash_tempp[1] and Dash_endpoint[Dash_ai]) Greater than 33.00
+                    Then - Actions
+                        Set VariableSet Dash_tempp[2] = (Dash_tempp[1] offset by 30.00 towards (Angle from Dash_tempp[1] to Dash_endpoint[Dash_ai]) degrees.)
+                        Custom script:   call SetUnitX(udg_Dash_caster[udg_Dash_ai],GetLocationX(udg_Dash_tempp[2]))
+                        Custom script:   call SetUnitY(udg_Dash_caster[udg_Dash_ai],GetLocationY(udg_Dash_tempp[2]))
+                        -------- Damage --------
+                        Set VariableSet Dash_tempug = (Units within Dash_AoE[Dash_ai] of Dash_tempp[2].)
+                        Unit Group - Pick every unit in Dash_tempug and do (Actions)
+                            Loop - Actions
+                                Set VariableSet Dash_pickedu = (Picked unit)
+                                If (All Conditions are True) then do (Then Actions) else do (Else Actions)
+                                    If - Conditions
+                                        (Dash_pickedu is Magic Immune) Equal to False
+                                        (Dash_pickedu is dead) Equal to False
+                                        (Dash_pickedu belongs to an enemy of (Owner of Dash_caster[Dash_ai]).) Equal to True
+                                        (Dash_pickedu is in Dash_alreadyDamaged[Dash_ai].) Equal to False
+                                    Then - Actions
+                                        Unit - Cause Dash_caster[Dash_ai] to damage Dash_pickedu, dealing Dash_dmg[Dash_ai] damage of attack type Spells and damage type Normal
+                                        Unit Group - Add Dash_pickedu to Dash_alreadyDamaged[Dash_ai]
+                                    Else - Actions
+                                        Unit Group - Remove Dash_pickedu from Dash_tempug.
+                        Custom script:   call DestroyGroup(udg_Dash_tempug)
+                    Else - Actions
+                        -------- Target reached, break off from loop --------
+                        Special Effect - Destroy Dash_attach[Dash_ai]
+                        Unit - Unpause Dash_caster[Dash_ai]
+                        Unit - Turn collision for Dash_caster[Dash_ai] On.
+                        Animation - Reset Dash_caster[Dash_ai]'s animation
+                        -------- recycle indices --------
+                        Set VariableSet Dash_MUI2[Dash_MUI3] = Dash_MUI2[Dash_MUI1]
+                        Set VariableSet Dash_MUI2[Dash_MUI1] = Dash_ai
+                        Set VariableSet Dash_MUI1 = (Dash_MUI1 - 1)
+                        Set VariableSet Dash_MUI3 = (Dash_MUI3 - 1)
+                        If (All Conditions are True) then do (Then Actions) else do (Else Actions)
+                            If - Conditions
+                                Dash_MUI1 Equal to 0
+                            Then - Actions
+                                Trigger - Turn off (This trigger)
+                            Else - Actions
+                Custom script:   call RemoveLocation(udg_Dash_tempp[1])
+                Custom script:   call RemoveLocation(udg_Dash_tempp[2])

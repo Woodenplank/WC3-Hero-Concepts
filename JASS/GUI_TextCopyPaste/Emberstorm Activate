@@ -1,0 +1,31 @@
+Emberstorm activate
+    Events
+        Unit - A unit Starts the effect of an ability
+    Conditions
+        (Ability being cast) Equal to Hellion: Emberstorm 
+    Actions
+        Set VariableSet Emst_MUI1 = (Emst_MUI1 + 1)
+        -------- Dynamic indexing --------
+        If (All Conditions are True) then do (Then Actions) else do (Else Actions)
+            If - Conditions
+                Emst_MUI1 Greater than Emst_maxindex
+            Then - Actions
+                Set VariableSet Emst_MUI2[Emst_MUI1] = Emst_MUI1
+                Set VariableSet Emst_maxindex = Emst_MUI1
+            Else - Actions
+        -------- Convenience integer --------
+        Set VariableSet Emst_i = Emst_MUI2[Emst_MUI1]
+        -------- Cast Setup --------
+        Set VariableSet Emst_caster[Emst_i] = (Triggering unit)
+        Custom script:   set udg_Emst_lvl = getlvl()
+        Custom script:   set udg_Emst_aoe[udg_Emst_i] = GetAbilityReal("aoe", udg_Emst_caster[udg_Emst_i], udg_Emst_lvl, 'A00M')
+        Custom script:   set udg_Emst_dur[udg_Emst_i] = GetAbilityReal("herodur", udg_Emst_caster[udg_Emst_i],  udg_Emst_lvl, 'A00M')
+        Set VariableSet Emst_dmg[Emst_i] = ((80.00 + ((Real((Emst_lvl + 1))) x 20.00)) + (0.30 x (Real((Intelligence of Emst_caster[Emst_i] (Include bonuses))))))
+        Set VariableSet Emst_dmg[Emst_i] = (Emst_dmg[Emst_i] x 0.50)
+        -------- begin looping --------
+        If (All Conditions are True) then do (Then Actions) else do (Else Actions)
+            If - Conditions
+                (Emberstorm loop <gen> is on) Equal to False
+            Then - Actions
+                Trigger - Turn on Emberstorm loop <gen>
+            Else - Actions

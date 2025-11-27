@@ -1,0 +1,116 @@
+=======================================================================
+================================WARLOCK================================
+=======================================================================
+
+Hero model	(Options)
+		https://www.hiveworkshop.com/threads/black-archmage.222980/#resource-33367	(Human)
+		https://www.hiveworkshop.com/threads/orcwarlock.47960/#resource-20831		(Orc)
+		https://www.hiveworkshop.com/threads/guldan.268784/#resource-37217		(Orc)
+		https://www.hiveworkshop.com/threads/nightelfwarlock.164278/#resource-29300	(Night Elf)
+		
+
+[Q] - Incinerate (25 mana, short cooldown)
+Sends forth a flurry of daemonic energy, causing three explosions down a line.
+(Enemies may be damaged by multiple explosions)
+
+[W] - Infernal Sigil (80 mana, 22 seconds cooldown)
+Places an Infernal Sigil upon a target enemy, dealing heavy damage over time, and causing them to take extra damage from your Minions.
+
+[E] - Cruel Pact (0 mana, medium cooldown)
+Sacrifice a target minion, restoring health based on its current HP.
+
+[R] (level 6) - Daemonfire (75 mana, 12 seconds cooldown)
+Rains hellish flames down upon a target area, causing moderate instant damage and light damage over time to enemies hit.
+(Not channeled, lasts 8 seconds)
+
+[Z] (level 10) - Hellgate (150 mana, long cooldown)
+Opens a gate to Hell at target location, burning nearby enemies for great periodic damage over 12 seconds.
+While active, the Hellgate spawns uncontrollable Fiends.
+
+[X] (Inherent - unit Skill) - Grimoire of Summoning
+Summon Imp (level 1) - Has minor splash ranged attack and a life regeneration aura
+Summon Hellhound (level 9) - Has a melee attack and an attack rate/movement speed aura
+Summon Gatekeeper (level 15) - Has a melee attack, a bonus armor aura, and War Stomp
+
+[F] - Hero Abilities (learn)
+
+=======================================================================
+================================ITEM SETS================================
+=======================================================================
+
+Daemonologist Garb
+(2) - Your Minions take 25% less damage.
+(4) - Cruel Pact no longer kills the target Minion (but you still restore health).
+
+Nightflame Regalia
+(2) - Incinerate restores mana equal to 10% of damage dealt.
+(4) - Daemonfire becomes Shadowflames, which deals double damage, but costs 200% more mana.
+(Rad Void Rain 		https://www.hiveworkshop.com/threads/void-rain.316011/)
+
+Arms of Cerberus
+(2) - Cruel Pact now restores mana equal to 33% of the sacrificed Minion's health.
+(4) - Hellhounds are now summoned in pairs.
+
+=======================================================================
+=============================ICONS AND EFFECTS============================
+=======================================================================
+
+[Q] - Incinerate
+Icon:	https://www.hiveworkshop.com/threads/btnheadburn.272856/#resource-65738
+Effect:	
+
+[W] - Infernal Sigil
+Icon:	https://www.hiveworkshop.com/threads/btnspell_shadow_curseofsargeras.54588/#resource-47735
+	or
+	WC3: Soulburn
+Effect:	WC3: Soulburn
+
+[E] - Cruel Pact
+Icon:	https://www.hiveworkshop.com/threads/btndemonicskullpendant.221130/#resource-62724
+Effect:	WC3: Death Pact
+
+[R] - Daemonfire 
+Icon:	WC3: Rain of Fire	 or	
+Effect:	https://www.hiveworkshop.com/threads/rain-of-fire-vol-ii.315904/
+
+[Z] - Grimoire
+Icon:	https://www.hiveworkshop.com/threads/btnhellishmastery.232243/#resource-63388
+
+[X] - Hellgate
+Icon:	https://www.hiveworkshop.com/threads/btngatesofthehell.307161/#resource-79461
+	or
+	https://www.hiveworkshop.com/threads/btnriseoffinallord.245219/#resource-64066
+Effect:	Possibly Hell Portal
+
+---------For Minions
+
+*Imp*
+Icon:	https://www.hiveworkshop.com/threads/btnhellstalker.241392/#resource-63854
+Model:	https://www.hiveworkshop.com/threads/imp5.48043/#resource-20938
+
+*Hellhound*	
+Icon:	https://www.hiveworkshop.com/threads/btndemondragon.118456/#resource-54059
+Model:	WC3: Fel Beast
+
+*Gatekeeper*	
+Icon:	https://www.hiveworkshop.com/threads/doomguard-color-variations.303127/#resource-77173
+Model:	WC3: Doomguard
+
+*Fiend*
+Icon:	None ('Locust' type unit)	
+Model:	https://www.hiveworkshop.com/threads/demon.135218/#resource-27565
+
+
+---------MISC. Cool demonic models
+https://www.hiveworkshop.com/threads/void-disc.315937/#resource-84122					by Mythic
+https://www.hiveworkshop.com/threads/darknessbomb.243119/						by nGy
+https://www.hiveworkshop.com/threads/atroce.206964/#resource-32180					by -Grendel
+https://www.hiveworkshop.com/threads/dreadlord.303345/#resource-77738					by Murlocologist
+https://www.hiveworkshop.com/threads/mannoroth.295766/#resource-74080				by Murlocologist
+https://www.hiveworkshop.com/threads/hell-portal.312534/#resource-82515				by icewolf055
+https://www.hiveworkshop.com/threads/lava-golem.313743/						by Veronnis
+
+
+
+
+Marcos DAB, Jesushipster, Power, bu3ny, JetFangInferno, Ramza, LordGandulfo88, Kimbo, Dionesiist, JollyD, San, Mythic, PrinceYaser, PROXY

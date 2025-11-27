@@ -1,0 +1,80 @@
+======================================================================
+================================TEMPLAR================================
+======================================================================
+
+Hero Model 	https://www.hiveworkshop.com/threads/renault-mograine.295149/#resource-73638
+
+
+[Q] - Smite (35 mana, low cooldown)
+Smite an enemy; dealing medium damage to the target. If the enemy is alone (no others within 500 range) deals double damage to main target.
+If [Hero] is below 25% health, this ability restores health equal to 25% of damage dealt.
+
+[W] - Pyre (75 mana, 12 seconds cooldown)
+Ignite the Templar in holy fire, dealing medium instant damage to nearby enemies, and restoring a large amount of hit points.
+For the next 5 seconds, the Templar burns nearby enemies for light periodic damage, healing for 30% of damage dealt.
+
+[E] - Retribution (Passive)
+Passive part 1: Gain bonus armor, and reflect a percentage of incoming melee damage.
+Passive part 2: Basic attacks also blasts enemies near the main target with light damage.
+
+[R] (level 6) - Angel's Calling (100 mana, 18 seconds cooldown)
+Send out spirits of light that strike nearby enemies, lasting up to 9 seconds. The spirits return to [Hero] restoring health based on damage dealt.
+
+[Z] (level 10) - Holy Grounds (100 mana, long cooldown)
+Consecrates a target area, slowing enemy movement speed by 40%. [Hero] takes 33% less damage while standing on Holy Grounds.
+
+[X] (level 15) - Reckoning (125 mana, 45 seconds cooldown)
+For the next 7 seconds, enemies take damage equal to 100% of the damage they deal to you.
+
+[F] - Hero Abilities (learn)
+
+
+=======================================================================
+================================ITEM SETS================================
+=======================================================================
+
+----
+(2) - Increases the heal of Smite from 25% of damage dealt to 35%.
+(4) - Smite always heals, regardless of your health percentage.
+
+----
+(2) - 
+(4) - Enemies standing within Holy Grounds take double damage from Pyre and Retribution.
+
+----
+(2) - 
+(4) - While Reckoning is active, the healing and damage of your other abilities is doubled.
+
+
+=======================================================================
+=============================ICONS AND EFFECTS============================
+=======================================================================
+
+[Q] - Smite
+Icon:	https://www.hiveworkshop.com/threads/btnspell_holy_holysmite.54610/#resource-47757
+Effect:	WC3 Holy Light
+
+[W] - Pyre
+Icon:	https://www.hiveworkshop.com/threads/btnspellholysurgeoflight.129354/#resource-54772
+Effect:	https://www.hiveworkshop.com/threads/holy-blast.226147/#resource-33757
+Buff:	https://www.hiveworkshop.com/threads/inferno-armor.221136/#resource-33190
+
+[E] - Retribution
+Icon:	https://www.hiveworkshop.com/threads/btnspell_holy_blessingofprotection.54617/#resource-47764
+Effect:	Slight glow on blasted enemies. Nothing else.
+
+[R] - Angel's Calling
+Icon:	https://www.hiveworkshop.com/threads/btnspellholyholynova.84871/#resource-52315
+Effect:	Faerie Dragon missile attacks.
+
+[Z] - Holy Grounds
+Icon:	https://www.hiveworkshop.com/threads/blessed-circle.307179/#resource-79466
+Effect:	https://www.hiveworkshop.com/threads/brilliance.50216/#resource-23424
+
+[X] - Reckoning
+Icon:	https://www.hiveworkshop.com/threads/btnspell_holy_sealofvalor.54657/#resource-47804
+Effect:	Ressurection
+Buff:	Divine Shield
+
+Jesushipster, Power, bu3ny, JetFangInferno
+All others Blizzard

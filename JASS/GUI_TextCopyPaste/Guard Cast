@@ -1,0 +1,39 @@
+Guard cast
+    Events
+        Unit - A unit Starts the effect of an ability
+    Conditions
+        (Ability being cast) Equal to Swordsaint: Guard 
+    Actions
+        Set VariableSet Guard_MUI1 = (Guard_MUI1 + 1)
+        -------- Dynamic indexing --------
+        If (All Conditions are True) then do (Then Actions) else do (Else Actions)
+            If - Conditions
+                Guard_MUI1 Greater than Guard_maxindex
+            Then - Actions
+                Set VariableSet Guard_MUI2[Guard_MUI1] = Guard_MUI1
+                Set VariableSet Guard_maxindex = Guard_MUI1
+            Else - Actions
+        -------- temporary-integer for convenience --------
+        Set VariableSet Guard_ti = Guard_MUI2[Guard_MUI1]
+        -------- Ability setup --------
+        Set VariableSet Guard_caster[Guard_ti] = (Triggering unit)
+        Custom script:   set udg_Guard_dur[udg_Guard_ti] = GetAbilityReal("herodur", udg_Guard_caster[udg_Guard_ti], getlvl(), 'A001') 
+        Unit Group - Add Guard_caster[Guard_ti] to Guard_ug
+        Animation - Remove the Lumber animation tag to Guard_caster[Guard_ti]
+        -------- Visual --------
+        Animation - Add the Defend animation tag to Guard_caster[Guard_ti]
+        Special Effect - Create a special effect attached to the origin of Guard_caster[Guard_ti] using PaladinAura.mdx
+        Set VariableSet Guard_attach[Guard_ti] = (Last created special effect)
+        -------- Start effect --------
+        If (All Conditions are True) then do (Then Actions) else do (Else Actions)
+            If - Conditions
+                (Guard loop <gen> is on) Equal to False
+            Then - Actions
+                Trigger - Turn on Guard loop <gen>
+            Else - Actions
+        If (All Conditions are True) then do (Then Actions) else do (Else Actions)
+            If - Conditions
+                (Guard deflect <gen> is on) Equal to False
+            Then - Actions
+                Trigger - Turn on Guard deflect <gen>
+            Else - Actions

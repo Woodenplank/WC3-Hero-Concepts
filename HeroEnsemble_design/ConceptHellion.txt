@@ -1,0 +1,66 @@
+======================================================================
+================================Hellion================================
+======================================================================
+
+Hero Model (WC3)	
+https://www.hiveworkshop.com/threads/ember-forge-ember-knight.318735/	(Lots of awesome stuff)
+
+
+[Q] - Hellfury Strike (25 mana, low cooldown)
+Slams a target enemy in melee range, dealing great damage (+Strength%).
+If 3 or more targets are within range of the primary target, the damage is doubled, but distributed evenly among all targets.
+
+[W] - Sinhammer (80 mana, medium cooldown)
+Infuse yourself with devillish power, gaining additional ability damage, life regeneration rate, and "spell vampirism".
+Each enemy killed while this ability is active, grants +1 maximum health. Up to 1000.
+
+[E] - Daemon Soul (No mana, Toggled on/off)
+Sets your soul ablaze, draining 1% of your maximum health per second, but burning nearby enemies for 3x that amount.
+
+[R] (level 6) - Emberstorm (100 mana, medium cooldown)
+Spins around in a storm of flames, dealing medium (+Agility%) periodic damage to nearby enemies.
+While spinning, [Hero] is immune to status effects. Lasts 6 seconds.
+
+[Z] (level 10) - 
+Carves out a Pentagram of fiery explosions that deal instant medium damage and light damage over time, as they remain on fire.
+[Hero] draws power from the Pentagram, gaining bonus attack damage and life regeneration rate while near it.
+
+[X] (Inherent) - HELLFORGE
+[Hero] has access to the Hellforge, where he can Infuse himself with a variety of abilities (only one may be active at a time).
+
+- Arms of Astaroth
+Passive: 	Hellfury Strike leaves all targets burning, causing 25% additional damage over 5 seconds.
+Active: 	Dash a short distance forwards, dealing damage to anything standing in your way (low cooldown)
+
+- Belial's Insights
+Passive: 	Sinhammer also grants a temporary Strength and Intelligence bonus based on the number of enemies nearby. 
+		(Every 25 pts of Agi, increase Str/Int bonus by +1)
+Active: 	After a brief delay; teleport to target area in a blaze of hellfire, dealing damage to all nearby enemies on arrival. (Medium cooldown)
+
+-Seven Tongues of Pytho (level 6 min)
+Passive: 	Daemon Soul increases movement speed as long as it remains active.
+Active: 	Send out seven tongues of flame in a circular pattern around [Hero], dealing light damage to all enemies hit (low cooldown).
+
+- Crown of the Nine Kingdoms (level 10 min)
+Passive: 	
+Active: 	
+
+[F] - Hero Abilities (learn)
+
+
+=======================================================================
+================================ITEM SETS==============================
+=======================================================================
+
+----
+(2) - 
+(4) - 
+
+----
+(2) - 
+(4) - 
+
+----
+(2) - Daemon Soul no longer drains health, but it's damage is reduced by 33%.
+(4) - 
+

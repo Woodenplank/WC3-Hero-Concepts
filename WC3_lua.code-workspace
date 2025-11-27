@@ -1,0 +1,26 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../../BlizzardLua"
+		}
+	],
+	"settings": {
+    "json.maxItemsComputed": 30000,
+    "Lua.runtime.version": "Lua 5.3",
+    "Lua.workspace.preloadFileSize": 2000,
+    "Lua.workspace.maxPreload": 1000,
+    "Lua.hint.enable": true,
+    "Lua.type.weakUnionCheck": true,
+    "Lua.type.weakNilCheck": true,
+    "Lua.diagnostics.disable": [
+        "lowercase-global",
+        "inject-field"
+    ],
+    "editor.parameterHints.enabled": true,
+    "workbench.editor.enablePreview": false,
+    "editor.semanticHighlighting.enabled": true
+	}
+}
