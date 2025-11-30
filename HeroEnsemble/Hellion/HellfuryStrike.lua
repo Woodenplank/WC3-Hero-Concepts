@@ -19,6 +19,13 @@ do
 		local dmg = GetAbilityField(FourCC('A00Q'), "herodur", alv)
 		local aoe = GetAbilityField(FourCC('A00Q'), "area", alv)
 		
+		-- Sinhammer mod
+        local SH_alv = GetUnitAbilityLevel(u, SHbuff_abilID)
+        local SHbool, SHdmgfactor, SHhealfactor = GetSinhammerMod(SH_alv)
+        if (SHbool) then
+            dmg = dmg*SHdmgfactor
+        end
+
 		-- Objects
 		local group ug = CreateGroup()
 		local cond = Condition(function() return
@@ -36,11 +43,13 @@ do
 			ForGroup(ug, function()
 				pu = GetEnumUnit()
 				UnitDamageTarget(cast, pu, dmg, true, false, ATTACK_TYPE_HERO, DAMAGE_TYPE_ENHANCED, nil)
+				if (SHbool) then QuickHealUnit(u, SHhealfactor*dmg) end-- Sinhammer healing
 				DestroyEffect(AddSpecialEffect("Abilities\\Weapons\\DemolisherFireMissile\\DemolisherFireMissile.mdl", GetUnitX(pu) , GetUnitY(pu)))
 			end)
 		else
 			-- single target damage
 			UnitDamageTarget(cast, targ, dmg, true, false, ATTACK_TYPE_HERO, DAMAGE_TYPE_ENHANCED, nil)
+			if (SHbool) then QuickHealUnit(u, SHhealfactor*dmg) end-- Sinhammer healing
 			DestroyEffect(AddSpecialEffect("Abilities\\Weapons\\DemolisherFireMissile\\DemolisherFireMissile.mdl", x, y))
 		end
 		
@@ -52,6 +61,8 @@ do
 				ForGroup(ug, function()
 					pu = GetEnumUnit()
 					UnitDamageTarget(cast, pu, dmg, true, false, ATTACK_TYPE_NORMAL, DAMAGE_TYPE_ENHANCED, nil)
+					--Sinhammer healing
+                	if (SHbool) then QuickHealUnit(u, SHhealfactor*dmg) end
 					-- TODO: burning over time effect? Sadly immolation doesn't work when instantly destroyed
 				end)
 				-- Attempt to end DoT

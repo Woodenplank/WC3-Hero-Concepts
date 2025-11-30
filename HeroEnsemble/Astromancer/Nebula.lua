@@ -5,7 +5,7 @@ do
     --local q_aoe = { 200, 200, 200, 200 }
     --local q_dur = { 3, 4, 5, 6 }
 
-    local function Nebula_Q()
+    local function NebulaCast()
         -- Exit early if this is the wrong ability
         local abilId = GetSpellAbilityId()
         if abilId ~= FourCC("A003") then
@@ -16,7 +16,7 @@ do
         local u = GetTriggerUnit()
         local x = GetSpellTargetX()
         local y = GetSpellTargetY()
-        local lvl = GetUnitAbilityLevel(u, abilId) - 1
+        local lvl = GetUnitAbilityLevel(u, FourCC(abilId)) - 1
  
         -- Stats
         --local dmg = q_dmg[lvl]
@@ -78,7 +78,7 @@ do
     local function CreateNebulaTrig()
         local tr = CreateTrigger()
         TriggerRegisterAnyUnitEventBJ(tr, EVENT_PLAYER_UNIT_SPELL_EFFECT)
-        TriggerAddAction(tr, Nebula_Q)
+        TriggerAddAction(tr, NebulaCast)
     end
 
     OnInit.trig(CreateNebulaTrig)

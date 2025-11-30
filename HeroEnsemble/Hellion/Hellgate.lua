@@ -5,10 +5,17 @@ do
         local u = GetTriggerUnit()
         local ug = CreateGroup()
         local alv = GetUnitAbilityLevel(u, FourCC('A00Q')) - 1
-
+        
         -- Fetch ability stats
         local dmg = GetAbilityField('A00Q', "herodur", alv)
         local aoe = GetAbilityField('A00Q', "area", alv)
+
+        -- Sinhammer mod
+        local SH_alv = GetUnitAbilityLevel(u, SHbuff_abilID)
+        local SHbool, SHdmgfactor, SHhealfactor = GetSinhammerMod(SH_alv)
+        if (SHbool) then
+            dmg = dmg*SHdmgfactor
+        end
 
         -- Teleport
         local x = GetSpellTargetX()
@@ -23,6 +30,8 @@ do
             local enemy = GetEnumUnit()
             if IsUnitEnemy(u, GetOwningPlayer(enemy)) then
                 UnitDamageTarget(u, enemy, dmg, true, false, ATTACK_TYPE_NORMAL, DAMAGE_TYPE_NORMAL, nil)
+                --Sinhammer healing
+                if (SHbool) then QuickHealUnit(u, SHhealfactor*dmg) end
             end
         end)
 
