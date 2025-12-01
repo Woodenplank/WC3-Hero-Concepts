@@ -5,7 +5,7 @@ do
     local function CollapseSun_X()
         -- Exit early if this is the wrong ability
         local abilId = GetSpellAbilityId()
-        if abilId ~= FourCC("A00C") then
+        if abilId ~= FourCC("A00B") then
             return
         end
 
@@ -16,18 +16,20 @@ do
         local lvl = GetUnitAbilityLevel(u, abilId) - 1
     
         -- Objects
+        local ug = CreateGroup()
         local t = CreateTimer()
         local tinterval = 0.5
-        local sfx = AddSpecialEffect("sun_red", x, y)
+        local sfx = AddSpecialEffect("Star_Red", x, y)
         BlzSetSpecialEffectZ( sfx, 125.0 )
 
         -- Stats
-        local dmg = GetAbilityField(FourCC('A00C'), "herodur", lvl) * tinterval
-        local aoe = GetAbilityField(FourCC('A00C'), "area", lvl)
-        local dur = GetAbilityField(FourCC('A00C'), "normaldur", lvl)
+        local dmg = GetAbilityField(FourCC('A00B'), "herodur", lvl) * tinterval
+        local aoe = GetAbilityField(FourCC('A00B'), "area", lvl)
+        local dur = GetAbilityField(FourCC('A00B'), "normaldur", lvl)
 
         -- Check
         local Transformed = false
+        SunCheckDummy = CreateUnit(GetOwningPlayer(u), FourCC("e004"),x,y,270)
 
         -- Periodicity --
         TimerStart(t, tinterval, true, function()
@@ -38,13 +40,13 @@ do
                     local enemy = GetEnumUnit()
                     if IsUnitEnemy(u, GetOwningPlayer(enemy)) then
                         UnitDamageTarget(u, enemy, dmg, true, false, ATTACK_TYPE_NORMAL, DAMAGE_TYPE_NORMAL, nil)
-                    elseif (BlackHoleChecks[GetHandleId(enemy)]) then
+                    elseif (BlackHoleChecks[GetHandleId(enemy)] == true) then
                         -- Run transformation to black hole
                         RemoveUnit(enemy)
                         Transformed = true
                         DestroyEffect(sfx)
                         DestroyEffect(AddSpecialEffect("DarkLightning.mdx", x, y))
-                        Voidsfx = AddSpecialEffect("Void Disc.mdx", x, y)
+                        local Voidsfx = AddSpecialEffect("Void Disc.mdx", x, y)
                         dmg = dmg * 1.5 / 20
                         tinterval = 0.05
                     end -- -- -- -- -- -- --
@@ -77,6 +79,7 @@ do
                 else
                     DestroyEffect(sfx)
                 end
+                RemoveUnit(SunCheckDummy)
             end
         end)
         -- END --

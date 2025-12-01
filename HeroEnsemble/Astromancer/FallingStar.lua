@@ -5,7 +5,7 @@ do
     local function FallingStar_W()
         -- Exit early if this is the wrong ability
         local abilId = GetSpellAbilityId()
-        if abilId ~= FourCC("A00B") then
+        if abilId ~= FourCC("A00A") then
             return
         end
  
@@ -16,8 +16,8 @@ do
         local lvl = GetUnitAbilityLevel(u, abilId) - 1
  
         -- Stats
-        local dmg = GetAbilityField(FourCC('A00B'), "herodur", lvl)
-        local aoe = GetAbilityField(FourCC('A00B'), "area", lvl)
+        local dmg = GetAbilityField(FourCC('A00A'), "herodur", lvl)
+        local aoe = GetAbilityField(FourCC('A00A'), "area", lvl)
  
         -- Objects
         local ug = CreateGroup()
@@ -31,14 +31,14 @@ do
         -- Delayed damage effect
         local delay = 1.5
         TimerStart(t, delay, false, function()
-            local boolean DoBlackHole = false
+            local DoBlackHole = false
             -- Deal AoE damage
             GroupEnumUnitsInRange(ug, x, y, aoe, nil)
             ForGroup(ug, function()
                 local pickedu = GetEnumUnit()
                 if IsUnitEnemy(u, GetOwningPlayer(pickedu)) then
                     UnitDamageTarget(u, pickedu, dmg, true, false, ATTACK_TYPE_NORMAL, DAMAGE_TYPE_NORMAL, nil)
-                elseif ((GetUnitTypeId(pickedu) == 'e002' )) then
+                elseif ((GetUnitTypeId(pickedu) == FourCC('e004') )) then
                     DoBlackHole = true
                     BlackHoleChecks[GetHandleId(pickedu)]=true
                 end
@@ -46,7 +46,7 @@ do
     
             -- Celestial spawn / if we're not doing a black hole
             if not DoBlackHole then
-                local Celest = CreateUnit(GetOwningPlayer(u), 'o003', x, y, 0)
+                local Celest = CreateUnit(GetOwningPlayer(u), FourCC('e003'), x, y, 270)
 	            UnitApplyTimedLifeBJ( 13.0, FourCC('BTLF'), Celest)
             end
                         
