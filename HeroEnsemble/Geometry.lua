@@ -17,3 +17,12 @@ function PolarStep(x,y,stepsize,angle)
     local new_y = y + stepsize * math.sin(angle)
     return new_x, new_y
 end
+
+---@param x1 number
+---@param x2 number
+---@param y1 number
+---@param y2 number
+---@return number
+function Distance(x1,x2, y1, y2)
+    return math.sqrt((x2-x1)^2 + (y2-y1)^2)
+end
