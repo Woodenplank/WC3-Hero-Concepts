@@ -12,20 +12,20 @@ do
         local u = GetTriggerUnit()
         local x = GetUnitX(u)
         local y = GetUnitY(u)
-        local alv = GetUnitAbilityLevel(u, abilId) - 1
+        local alv = GetUnitAbilityLevel(u, FourCC('A00P')) - 1
 
         -- Ability stats
         local dmg = GetAbilityField(FourCC('A00P'), "herodur", alv) + addSP(u, 2.0)
         local area= GetAbilityField(FourCC('A00P'), "aoe", alv)
         local tongues=7
-        local tonguesteps = (2*bj_PI)/tongues
+        local tonguesteps = (2*math.pi)/tongues
 
         -- Objects
         local ug = CreateGroup()
         local t = CreateTimer()
         
         -- Sinhammer mod
-        local SH_alv = GetUnitAbilityLevel(u, SHbuff_abilID)
+        local SH_alv = GetUnitAbilityLevel(u, SHbuff_abilId)
         local SHbool, SHdmgfactor, SHhealfactor = GetSinhammerMod(SH_alv)
         if (SHbool) then
             dmg = dmg*SHdmgfactor
@@ -38,7 +38,7 @@ do
             local protgroup = CreateGroup()
             -- Draw a 'circle' of flames at current distance
             local ang = 0
-            while (ang < 2 * BJ_PI)
+            while (ang < 2 * math.pi)
             do
                 -- SFX
                 local new_x = x + dist * math.cos(ang)

@@ -29,20 +29,37 @@ Game tooltip:
         --TODO: Check for Hellforge bonus
 
         -- Fetch ability stats
-        --local dmgfactor = GetAbilityField(FourCC('A00K'), "herodur", alv)
-        --local healfactor = GetAbilityField(FourCC('A00K'), "aoe", alv)
         local dur = GetAbilityField(FourCC('A00K'), "normaldur", alv)
 
+        -- Hellforge mod
+        local BelialsInsights = ( GetUnitAbilityLevel(u, HellforgedSpells["BelialsInsights"]) > 0 )
+        if BelialsInsights then
+            local ug = CreateGroup()
+            local cond = Condition(function() return
+                IsUnitEnemy(GetFilterUnit(),GetOwningPlayer(u))
+                and not IsUnitType(GetFilterUnit(), UNIT_TYPE_DEAD)
+                and not IsUnitType(GetFilterUnit(), UNIT_TYPE_STRUCTURE)
+            end)
+            GroupEnumUnitsInRange(ug, GetUnitX(u), GetUnitY(u), 500, cond)
+            local count = CountUnitsInGroup(ug)
+            UnitAddAbility(u, FourCC('A00V'))
+            SetUnitAbilityLevel(u, FourCC('A00V'), count)
+            DestroyGroup(ug)
+            DestroyCondition(cond)
+        end
+
         -- Add buff ability
-        UnitAddAbility(u, SHbuff_abilID)
-        SetUnitAbilityLevel(u, SHbuff_abilID, alv+1)
+        UnitAddAbility(u, SHbuff_abilId)
+        SetUnitAbilityLevel(u, SHbuff_abilId, alv+1)
+        BlzUnitHideAbility(u, SHbuff_abilId, true)
 
         -- Objects
         local t = CreateTimer()
 
         -- Countdown to remove
         TimerStart(t, dur, false, function()
-            UnitRemoveAbility(u, SHbuff_abilID)
+            UnitRemoveAbility(u, SHbuff_abilId)
+            UnitRemoveAbility(u, FourCC('A00V')) -- If Hellion doesn't have the ability, this does nothing
             PauseTimer(t)
             DestroyTimer(t)
         end)

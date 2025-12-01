@@ -23,29 +23,32 @@ do
 
     -- Getters
     local u = GetTriggerUnit()
-    local alv = GetUnitAbilityLevel(u, FourCC(abilId))
+    local alv = GetUnitAbilityLevel(u, FourCC('A00M'))
     
     -- Ability stats
     local tinterval = 0.5
     local dmg = (60 + 20*(alv)) * tinterval
-    local dur = GetAbilityField(FourCC(abilID), "herodur", alv-1)
+    local aoe = GetAbilityField(FourCC('A00M'), "aoe", alv-1)
+    local dur = GetAbilityField(FourCC('A00M'), "herodur", alv-1)
 
     -- Objects
     local ug = CreateGroup()
     local t = CreateTimer()
 
     -- Sinhammer mod
-    local SH_alv = GetUnitAbilityLevel(u, SHbuff_abilID)
+    local SH_alv = GetUnitAbilityLevel(u, SHbuff_abilId)
     local SHbool, SHdmgfactor, SHhealfactor = GetSinhammerMod(SH_alv)
     if (SHbool) then
         dmg = dmg*SHdmgfactor
     end
 
-    TimerStart(t, tinterval, true, function()
+    -- Hellforge mod
+    local SevenTonguesOfPytho = ( GetUnitAbilityLevel(u, HellforgedSpells["SevenTonguesOfPytho"]) > 0 )
 
+    TimerStart(t, tinterval, true, function()
         local x = GetUnitX(u)
         local y = GetUnitY(u)
-        -- Area damage
+        -- Deal area damage
         GroupEnumUnitsInRange(ug, x, y, aoe, nil)
         ForGroup(ug, function()
             local enemy = GetEnumUnit()
@@ -57,15 +60,16 @@ do
         end)
         
         -- Flame tornados
-        -- TODO Check for active Hellforge upgrade!
-        if (math.random() <= 0.4) then
-            local summoned = CreateUnit(GetOwningPlayer(u), 'e001', x, y, 270)
-            UnitApplyTimedLifeBJ(summoned, FourCC('BTLF'), math.random(3,5))
+        if SevenTonguesOfPytho then
+            if (math.random() <= 0.4) then
+                local summoned = CreateUnit(GetOwningPlayer(u), FourCC('e001'), x, y, 270)
+                UnitApplyTimedLife(summoned, FourCC('BTLF'), math.random(3,5))
+            end
         end
 
-        -- Check for ending (duration or lack of buff somehow)
-        dur = dur -1
-        if (dur <= 0 or not UnitHasBuffBJ(u, FourCC('BOww'))) then 
+        -- Check for ending
+        dur = dur - tinterval
+        if (dur <= 0) then
             PauseTimer(t)
             DestroyTimer(t)
             DestroyGroup(ug)
@@ -74,13 +78,12 @@ do
     -- END --
     end
 
-
-        -- Build trigger --
+    -- Build trigger --
     local function CreateEmberstormTrig()
         local tr = CreateTrigger()
         TriggerRegisterAnyUnitEventBJ(tr, EVENT_PLAYER_UNIT_SPELL_EFFECT)
         TriggerAddAction(tr, EmberstormCast)
     end
+
     OnInit.trig(CreateEmberstormTrig)
-    
 end

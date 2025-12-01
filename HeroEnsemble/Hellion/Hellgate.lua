@@ -1,6 +1,11 @@
 do
 
     function HellgateCast()
+        local abilId = GetSpellAbilityId()
+		if abilId ~= FourCC("A00Q") then
+			return
+		end
+
         -- Getters
         local u = GetTriggerUnit()
         local ug = CreateGroup()
@@ -11,7 +16,7 @@ do
         local aoe = GetAbilityField('A00Q', "area", alv)
 
         -- Sinhammer mod
-        local SH_alv = GetUnitAbilityLevel(u, SHbuff_abilID)
+        local SH_alv = GetUnitAbilityLevel(u, SHbuff_abilId)
         local SHbool, SHdmgfactor, SHhealfactor = GetSinhammerMod(SH_alv)
         if (SHbool) then
             dmg = dmg*SHdmgfactor

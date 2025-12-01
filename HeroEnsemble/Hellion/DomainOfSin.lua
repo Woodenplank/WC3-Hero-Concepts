@@ -11,7 +11,7 @@ do
     function DomSinCast()
         -- Exit early if this is the wrong ability
         local abilId = GetSpellAbilityId()
-        if abilId ~= FourCC("DOMSIN") then
+        if abilId ~= FourCC('A00N') then
             return
         end
         
@@ -19,13 +19,14 @@ do
         local u = GetTriggerUnit()
         local x = GetUnitX(u)
         local y = GetUnitY(u)
-        local alv = GetUnitAbilityLevel(u, FourCC(abilId)) - 1
+        local alv = GetUnitAbilityLevel(u, FourCC('A00N')) - 1
 
         -- Stats
-        local dmg = GetAbilityField(FourCC('DOMSIN'), "herodur", alv)
+        local dmg = GetAbilityField(FourCC('A00N'), "herodur", alv)
         local dmg_instant=200
-        local aoe = GetAbilityField(FourCC('DOMSIN'), "area", alv)
-        local dur = GetAbilityField(FourCC('DOMSIN'), "normaldur", alv)
+        local aoe = GetAbilityField(FourCC('A00N'), "area", alv)
+        local heal= GetAbilityField(FourCC('A00N'), "range", alv)
+        local dur = GetAbilityField(FourCC('A00N'), "normaldur", alv)
 
         -- Objects
         local ug = CreateGroup()
@@ -33,10 +34,10 @@ do
 
         -- Dummy buffer
         local dummy = CreateUnit(GetOwningPlayer(u), FourCC('e002'), x, y, 270)
-        SetUnitAbilityLevel(dummy, abilcode, alv+1)
+        SetUnitAbilityLevel(dummy, FourCC('S000'), alv+1)
 
         -- Sinhammer mod
-        local SH_alv = GetUnitAbilityLevel(u, SHbuff_abilID)
+        local SH_alv = GetUnitAbilityLevel(u, SHbuff_abilId)
         local SHbool, SHdmgfactor, SHhealfactor = GetSinhammerMod(SH_alv)
         if (SHbool) then
             dmg = dmg*SHdmgfactor
@@ -47,19 +48,18 @@ do
         GroupEnumUnitsInRange(ug, x, y, aoe, nil)
         if (SHbool) then --with Sinhammer healing
             ForGroup(ug, function()
-            local enemy = GetEnumUnit()
-            if IsUnitEnemy(u, GetOwningPlayer(enemy)) then
-                UnitDamageTarget(u, enemy, 200, true, false, ATTACK_TYPE_NORMAL, DAMAGE_TYPE_NORMAL, nil)
-                QuickHealUnit(u, SHhealfactor*dmg_instant) 
-            end
+                local enemy = GetEnumUnit()
+                if IsUnitEnemy(u, GetOwningPlayer(enemy)) then
+                    UnitDamageTarget(u, enemy, dmg_instant, true, false, ATTACK_TYPE_NORMAL, DAMAGE_TYPE_NORMAL, nil)
+                    QuickHealUnit(u, SHhealfactor*dmg_instant)
+                end
             end)
         else -- without Sinhammer healing
             ForGroup(ug, function()
-            local enemy = GetEnumUnit()
-            if IsUnitEnemy(u, GetOwningPlayer(enemy)) then
-                UnitDamageTarget(u, enemy, 200, true, false, ATTACK_TYPE_NORMAL, DAMAGE_TYPE_NORMAL, nil)
-
-            end
+                local enemy = GetEnumUnit()
+                if IsUnitEnemy(u, GetOwningPlayer(enemy)) then
+                    UnitDamageTarget(u, enemy, dmg_instant, true, false, ATTACK_TYPE_NORMAL, DAMAGE_TYPE_NORMAL, nil)
+                end
             end)
         end
         
@@ -70,13 +70,18 @@ do
             ForGroup(ug, function()
                 local enemy = GetEnumUnit()
                 if IsUnitEnemy(u, GetOwningPlayer(enemy)) then
-                    UnitDamageTarget(u, enemy, dmg_instant, true, false, ATTACK_TYPE_NORMAL, DAMAGE_TYPE_NORMAL, nil)
+                    UnitDamageTarget(u, enemy, dmg, true, false, ATTACK_TYPE_NORMAL, DAMAGE_TYPE_NORMAL, nil)
                     --Sinhammer healing
                     if (SHbool) then QuickHealUnit(u, SHhealfactor*dmg) end
                 end
             end)
-            
+            -- Self heal (if within aura range)
+            if Dist(x,GetUnitX(u),y,GetUnitY(u)) <= 400 then
+                QuickHealUnit(u, heal)
+            end
+
             -- Check for ending
+            dur = dur - 1
             if (dur <= 0) then
                 RemoveUnit(dummy)
                 PauseTimer(t)
