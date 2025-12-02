@@ -36,6 +36,10 @@ do
         local ticks_max = 14
         local tick = 0
 
+        -- Arcane Almanac crit stats fetch
+        local critmod = GetAlmaCritmod(u)
+        local critchance = GetAlmaCritchance(u)
+
         -- START --
         TimerStart(t, tinterval, true, function()
             
@@ -44,7 +48,14 @@ do
             ForGroup(ug, function()
                 local enemy = GetEnumUnit()
                 if IsUnitEnemy(u, GetOwningPlayer(enemy)) then
-                    UnitDamageTarget(u, enemy, dmg, true, false, ATTACK_TYPE_NORMAL, DAMAGE_TYPE_NORMAL, nil)
+                    -- roll for crit damage
+                    if (critmod > 1.0) then
+                        if (math.random() <= critchance) then
+                            UnitDamageTarget(u, enemy, dmg*critmod, true, false, ATTACK_TYPE_NORMAL, DAMAGE_TYPE_NORMAL, nil)
+                        end
+                    else -- No crit; do regular damage
+                        UnitDamageTarget(u, enemy, dmg, true, false, ATTACK_TYPE_NORMAL, DAMAGE_TYPE_NORMAL, nil)
+                    end
                 end
             end)
     

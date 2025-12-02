@@ -28,6 +28,16 @@ do
 	    BlzSetSpecialEffectScale( StarSFX, 2.0 )
 	    BlzSetSpecialEffectTimeScale( StarSFX, 0.5 )
 
+        -- Arcane Almanac (Active Bonus or Crit roll)
+        local StarmodActive, BonusMod = AlmaStarmod(u)
+        if (StarmodActive) then
+            -- If Arcane Almanac was actively used
+            dmg = dmg*BonusMod
+        else
+            -- If we didn't have ACTIVE bonus, roll for random crit chance instead
+            dmg = dmg * AlmaCrit(u)
+        end
+
         -- Delayed damage effect
         local delay = 1.5
         TimerStart(t, delay, false, function()
@@ -46,8 +56,11 @@ do
     
             -- Celestial spawn / if we're not doing a black hole
             if not DoBlackHole then
-                local Celest = CreateUnit(GetOwningPlayer(u), FourCC('e003'), x, y, 270)
-	            UnitApplyTimedLifeBJ( 13.0, FourCC('BTLF'), Celest)
+                local Celest = CrUnit(GetOwningPlayer(u), FourCC('e003'), x, y, 270)
+                if StarmodActive then
+                    UnitApplyTimedLifeBJ( 13.0 * 1.3, FourCC('BTLF'), Celest)
+                else
+                    UnitApplyTimedLifeBJ( 13.0, FourCC('BTLF'), Celest)
             end
                         
             -- Cleanup

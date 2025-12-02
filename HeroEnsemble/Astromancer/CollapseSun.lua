@@ -31,6 +31,10 @@ do
         local Transformed = false
         SunCheckDummy = CreateUnit(GetOwningPlayer(u), FourCC("e004"),x,y,270)
 
+        -- Arcane Almanac crit stats fetch
+        local critmod = GetAlmaCritmod(u)
+        local critchance = GetAlmaCritchance(u)
+
         -- Periodicity --
         TimerStart(t, tinterval, true, function()
             if not Transformed then
@@ -39,7 +43,14 @@ do
                 ForGroup(ug, function()
                     local enemy = GetEnumUnit()
                     if IsUnitEnemy(u, GetOwningPlayer(enemy)) then
-                        UnitDamageTarget(u, enemy, dmg, true, false, ATTACK_TYPE_NORMAL, DAMAGE_TYPE_NORMAL, nil)
+                        -- roll for crit damage
+                        if (critmod > 1.0) then
+                            if (math.random() <= critchance) then
+                                UnitDamageTarget(u, enemy, dmg*critmod, true, false, ATTACK_TYPE_NORMAL, DAMAGE_TYPE_NORMAL, nil)
+                            end
+                        else -- No crit; do regular damage
+                            UnitDamageTarget(u, enemy, dmg, true, false, ATTACK_TYPE_NORMAL, DAMAGE_TYPE_NORMAL, nil)
+                        end                        
                     elseif (BlackHoleChecks[GetHandleId(enemy)] == true) then
                         -- Run transformation to black hole
                         RemoveUnit(enemy)
@@ -58,7 +69,14 @@ do
                 ForGroup(ug, function()
                     local enemy = GetEnumUnit()
                     if IsUnitEnemy(u, GetOwningPlayer(enemy)) then
-                        UnitDamageTarget(u, enemy, dmg, true, false, ATTACK_TYPE_NORMAL, DAMAGE_TYPE_NORMAL, nil)
+                        -- roll for crit damage
+                        if (critmod > 1.0) then
+                            if (math.random() <= critchance) then
+                                UnitDamageTarget(u, enemy, dmg*critmod, true, false, ATTACK_TYPE_NORMAL, DAMAGE_TYPE_NORMAL, nil)
+                            end
+                        else -- No crit; do regular damage
+                            UnitDamageTarget(u, enemy, dmg, true, false, ATTACK_TYPE_NORMAL, DAMAGE_TYPE_NORMAL, nil)
+                        end
                         local enemy_x = GetUnitX(enemy)
                         local enemy_y = GetUnitY(enemy)
                         local ang = AngleBetweenCoords(enemy_x, x, enemy_y, y)
