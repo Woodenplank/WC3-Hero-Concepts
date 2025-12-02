@@ -37,6 +37,8 @@ do
         SetUnitAbilityLevel(u, AlmanacBuff_AbilId, count)
         BlzUnitHideAbility(u, AlmanacBuff_AbilId, true)
 
+        -- TODO the ability does NOT get properly hidden; nor does casting <Falling Star> seem to remove it.
+
         -- Expiration
         local t = CreateTimer()
         TimerStart(t, dur, false, function()

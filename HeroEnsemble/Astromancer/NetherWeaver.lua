@@ -60,9 +60,9 @@ do
             end
             UnitDamageTarget(u, pu, moddeddmg, true, false, ATTACK_TYPE_NORMAL, DAMAGE_TYPE_NORMAL, nil)
             if NetherWeaveShield[id] ~= nil then
-                NetherWeaveShield[id] = NetherWeaveShield[id] + (shieldfactor * (moddeddmg))
+                NetherWeaveShield[id] = NetherWeaveShield[id] + (shieldfactor * moddeddmg)
             else
-                NetherWeaveShield[id] = shieldfactor * (moddeddmg)
+                NetherWeaveShield[id] = shieldfactor * moddeddmg
             end
         end)
 
