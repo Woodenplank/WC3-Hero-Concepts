@@ -19,8 +19,9 @@ do
         local ug = CreateGroup()
         local t = CreateTimer()
         local tinterval = 0.5
-        local sfx = AddSpecialEffect("Star_Red", x, y)
+        local sfx = AddSpecialEffect("Star_Red.mdx", x, y)
         BlzSetSpecialEffectZ( sfx, 125.0 )
+        DestroyEffect(AddSpecialEffect("Shining Flare.mdx", x, y)) -- pretty spawning effect
 
         -- Stats
         local dmg = GetAbilityField(FourCC('A00B'), "herodur", lvl) * tinterval
@@ -96,6 +97,7 @@ do
                     DestroyEffect(Voidsfx)
                 else
                     DestroyEffect(sfx)
+                    DestroyEffect(AddSpecialEffect("Shining Flare.mdx", x, y)) -- pretty de-spawning effect
                 end
                 RemoveUnit(SunCheckDummy)
             end
