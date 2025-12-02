@@ -56,13 +56,17 @@ do
     
             -- Celestial spawn / if we're not doing a black hole
             if not DoBlackHole then
-                local Celest = CrUnit(GetOwningPlayer(u), FourCC('e003'), x, y, 270)
+                local Celest = CreateUnit(GetOwningPlayer(u), FourCC('e003'), x, y, 270)
                 if StarmodActive then
                     UnitApplyTimedLifeBJ( 13.0 * 1.3, FourCC('BTLF'), Celest)
                 else
                     UnitApplyTimedLifeBJ( 13.0, FourCC('BTLF'), Celest)
+                end
             end
-                        
+            
+            -- "consume" Almanac Starmod buff
+            UnitRemoveAbility(u, AlmanacBuff_AbilId)
+
             -- Cleanup
             DestroyGroup(ug)
             PauseTimer(t)

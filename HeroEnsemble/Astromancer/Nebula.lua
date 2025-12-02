@@ -1,9 +1,7 @@
 do 
     --[[ See Discussion at 
-        https://www.hiveworkshop.com/threads/delayed-actions-and-mui-management-in-lua.367956/]]
-    --local q_dmg = { 100, 200, 300, 400 }
-    --local q_aoe = { 200, 200, 200, 200 }
-    --local q_dur = { 3, 4, 5, 6 }
+        https://www.hiveworkshop.com/threads/delayed-actions-and-mui-management-in-lua.367956/
+    ]]
 
     local function NebulaCast()
         -- Exit early if this is the wrong ability
@@ -16,12 +14,9 @@ do
         local u = GetTriggerUnit()
         local x = GetSpellTargetX()
         local y = GetSpellTargetY()
-        local lvl = GetUnitAbilityLevel(u, FourCC(abilId)) - 1
+        local lvl = GetUnitAbilityLevel(u, FourCC('A003')) - 1
  
         -- Stats
-        --local dmg = q_dmg[lvl]
-        --local aoe = q_aoe[lvl]
-        --local dur = q_dur[lvl]
         local dmg = GetAbilityField(FourCC('A003'), "herodur", lvl) / 2
         local aoe = GetAbilityField(FourCC('A003'), "area", lvl)
         local dur = 7.0
@@ -39,27 +34,24 @@ do
         -- Arcane Almanac crit stats fetch
         local critmod = GetAlmaCritmod(u)
         local critchance = GetAlmaCritchance(u)
+        local moddeddmg = dmg
 
         -- START --
         TimerStart(t, tinterval, true, function()
-            
             -- Deal AoE damage
             GroupEnumUnitsInRange(ug, x, y, aoe, nil)
             ForGroup(ug, function()
                 local enemy = GetEnumUnit()
                 if IsUnitEnemy(u, GetOwningPlayer(enemy)) then
-                    -- roll for crit damage
                     if (critmod > 1.0) then
+                        -- roll for crit damage
                         if (math.random() <= critchance) then
-                            UnitDamageTarget(u, enemy, dmg*critmod, true, false, ATTACK_TYPE_NORMAL, DAMAGE_TYPE_NORMAL, nil)
+                            moddeddmg = dmg*critmod
                         end
-                    else -- No crit; do regular damage
-                        UnitDamageTarget(u, enemy, dmg, true, false, ATTACK_TYPE_NORMAL, DAMAGE_TYPE_NORMAL, nil)
                     end
+                    UnitDamageTarget(u, enemy, moddeddmg, true, false, ATTACK_TYPE_NORMAL, DAMAGE_TYPE_NORMAL, nil)
                 end
             end)
-    
-            -- No (periodic) visual effects
 
             -- Star sprites
             --[[ Avoid floating point errors by some modulo arithmetic on ticks ]]

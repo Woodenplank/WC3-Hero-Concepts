@@ -5,8 +5,8 @@ Active: Empower your next Falling Star. Guaranteeing a critical, adding 5% bonus
 ]]
 
 -- Globals --
-AlmanacBuff_AbilId = FourCC('ASTRAL_DUMMY_THING')
-Almanac_AbilId = FourCC('OmgOmgYouGuys') --- TODO: adjust this to the proper editor value...
+AlmanacBuff_AbilId = FourCC('A00E')
+Almanac_AbilId = FourCC('A00D')
 -------------
 
 do
@@ -15,13 +15,13 @@ do
     local function ArcaneAlmanacActive()
         -- Exit early if this is the wrong ability
         local abilId = GetSpellAbilityId()
-        if abilId ~= FourCC("A00B") then
+        if abilId ~= FourCC("A00D") then
             return
         end
 
         -- Getters
         local u = GetTriggerUnit()
-        local alv = GetUnitAbilityLevel(u, FourCC('A00B')) - 1
+        local alv = GetUnitAbilityLevel(u, Almanac_AbilId) - 1
 
         -- Get Starsprite count
         local ug = CreateGroup()
@@ -30,16 +30,17 @@ do
         local count = CountUnitsInGroup(ug)
 
         -- Ability stats
-        local dur = GetAbilityField(FourCC('A00B'), "normaldur", alv)
+        local dur = GetAbilityField(Almanac_AbilId, "normaldur", alv)
 
         -- Dummy buff ability (also used to check bonus on Falling Star)
-        UnitAddAbility(u, FourCC('ASTRAL_DUMMY_THING'))
-        SetUnitAbilityLevel(u, FourCC('ASTRAL_DUMMY_THING'), count)
+        UnitAddAbility(u, AlmanacBuff_AbilId)
+        SetUnitAbilityLevel(u, AlmanacBuff_AbilId, count)
+        BlzUnitHideAbility(u, AlmanacBuff_AbilId, true)
 
         -- Expiration
         local t = CreateTimer()
-        StartTimer(t, dur, false, function()
-            UnitRemoveAbility(u, FourCC('ASTRAl_DUMMY_THING'))
+        TimerStart(t, dur, false, function()
+            UnitRemoveAbility(u, AlmanacBuff_AbilId)
             PauseTimer(t)
             DestroyTimer(t)
         end)

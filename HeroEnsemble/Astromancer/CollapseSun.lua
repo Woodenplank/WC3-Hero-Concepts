@@ -18,7 +18,7 @@ do
         -- Objects
         local ug = CreateGroup()
         local t = CreateTimer()
-        local tinterval = 0.5
+        local tinterval = 0.05
         local sfx = AddSpecialEffect("Star_Red.mdx", x, y)
         BlzSetSpecialEffectZ( sfx, 125.0 )
         DestroyEffect(AddSpecialEffect("Shining Flare.mdx", x, y)) -- pretty spawning effect
@@ -35,6 +35,7 @@ do
         -- Arcane Almanac crit stats fetch
         local critmod = GetAlmaCritmod(u)
         local critchance = GetAlmaCritchance(u)
+        local moddeddmg = dmg
 
         -- Periodicity --
         TimerStart(t, tinterval, true, function()
@@ -44,14 +45,13 @@ do
                 ForGroup(ug, function()
                     local enemy = GetEnumUnit()
                     if IsUnitEnemy(u, GetOwningPlayer(enemy)) then
-                        -- roll for crit damage
                         if (critmod > 1.0) then
+                            -- roll for crit damage
                             if (math.random() <= critchance) then
-                                UnitDamageTarget(u, enemy, dmg*critmod, true, false, ATTACK_TYPE_NORMAL, DAMAGE_TYPE_NORMAL, nil)
+                                moddeddmg = dmg*critmod
                             end
-                        else -- No crit; do regular damage
-                            UnitDamageTarget(u, enemy, dmg, true, false, ATTACK_TYPE_NORMAL, DAMAGE_TYPE_NORMAL, nil)
-                        end                        
+                        end
+                        UnitDamageTarget(u, enemy, moddeddmg, true, false, ATTACK_TYPE_NORMAL, DAMAGE_TYPE_NORMAL, nil)
                     elseif (BlackHoleChecks[GetHandleId(enemy)] == true) then
                         -- Run transformation to black hole
                         RemoveUnit(enemy)
@@ -60,7 +60,6 @@ do
                         DestroyEffect(AddSpecialEffect("DarkLightning.mdx", x, y))
                         local Voidsfx = AddSpecialEffect("Void Disc.mdx", x, y)
                         dmg = dmg * 1.5 / 20
-                        tinterval = 0.05
                     end -- -- -- -- -- -- --
                 end)
             else
