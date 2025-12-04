@@ -3,7 +3,7 @@ do
         "Shroud yourself in starlight, gaining bonus armor and movement speed and restoring a small amount of hit points.
         Lasts <A00H:ANcl,Dur1> seconds."
     ]]
-    function SilverVeilCast()
+    local function SilverVeilCast()
         -- Exit early if this is the wrong ability
         local abilId = GetSpellAbilityId()
         if abilId ~= FourCC("A00H") then

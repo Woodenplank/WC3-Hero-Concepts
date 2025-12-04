@@ -6,7 +6,7 @@ do
     Note that the notion of 'shields' presupposes a Damage-Detection system.
     ]]
 
-    function NetherWeaverCast()
+    local function NetherWeaverCast()
         -- Exit early if this is the wrong ability
         local abilId = GetSpellAbilityId()
         if abilId ~= FourCC("A002") then
