@@ -16,7 +16,7 @@ Game tooltip:
     Since we're using a standard "buff-ability" for the life regeneration, we may as well use that for tracking activity.
 ]]
 
-    function SinhammerCast()
+    local function SinhammerCast()
         -- Exit early if this is the wrong ability
         local abilId = GetSpellAbilityId()
         if abilId ~= FourCC("A00K") then

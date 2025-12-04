@@ -8,7 +8,7 @@ do
 |cffffcc00Level 3|r - <A00N:ANcl,HeroDur3> damage per second, <S000:SCae,DataB3,%>% bonus attack rate, <A00N:ANcl,Rng3> healing per second.
 ]]
 
-    function DomSinCast()
+    local function DomSinCast()
         -- Exit early if this is the wrong ability
         local abilId = GetSpellAbilityId()
         if abilId ~= FourCC('A00N') then

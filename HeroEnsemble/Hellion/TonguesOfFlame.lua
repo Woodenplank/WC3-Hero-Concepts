@@ -2,7 +2,7 @@ do
 --[[
     Emits 7 tongues of a flames in a circle around the hero, dealing damage (+Focus) to enemies on contact.
 ]]
-    function TonguesOfFlameMain()
+    local function TonguesOfFlameMain()
         -- Exit early if this is the wrong ability
         local abilId = GetSpellAbilityId()
         if abilId ~= FourCC('A00P') then

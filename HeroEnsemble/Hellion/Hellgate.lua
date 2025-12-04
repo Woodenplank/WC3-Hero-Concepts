@@ -1,6 +1,6 @@
 do
 
-    function HellgateCast()
+    local function HellgateCast()
         local abilId = GetSpellAbilityId()
 		if abilId ~= FourCC("A00Q") then
 			return
