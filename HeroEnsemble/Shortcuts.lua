@@ -1,6 +1,6 @@
 
 ---@param which_unit unit
----@param which_ability integer
+---@param which_ability integer | FourCC string
 ---@param which_level integer
 ---@param hide boolean
 ---@return nil
