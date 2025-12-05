@@ -24,12 +24,12 @@ local function OmnislashMain()
     local tu = GetSpellTargetUnit()
     local centerX = GetUnitX(tu)
     local centerY = GetUnitY(tu)
-    local alv = GetUnitAbilityLevel(FourCC('0000'), u) - 1
+    local alv = GetUnitAbilityLevel(FourCC('A000'), u) - 1
 
     -- Ability stats
-    local dmg = GetAbilityField(FourCC('0000'), "herodur", alv)
-    local area= GetAbilityField(FourCC('0000'), "aoe", alv)
-    local numhits=GetAbilityField(FourCC('0000'), "normaldur", alv)
+    local dmg = GetAbilityField(FourCC('A000'), "herodur", alv)
+    local area= GetAbilityField(FourCC('A000'), "aoe", alv)
+    local numhits=GetAbilityField(FourCC('A000'), "normaldur", alv)
 
     -- Objects
     local ug = CreateGroup()
