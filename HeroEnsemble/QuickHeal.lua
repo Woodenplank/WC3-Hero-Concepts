@@ -4,10 +4,17 @@
 ]]
 
 ---@param target unit
----@param heal real
+---@param heal float
 function QuickHealUnit(target, heal)
     local hp = GetUnitState(target, UNIT_STATE_LIFE)
     SetUnitState(target, UNIT_STATE_LIFE, hp+heal)
+end
+
+---@param target unit
+---@param restore float
+function QuickManaRestore(target, restore)
+    local fp = GetUnitState(target, UNIT_STATE_MANA)
+    SetUnitState(target, UNIT_STATE_MANA, fp+restore)
 end
 
 --[[
