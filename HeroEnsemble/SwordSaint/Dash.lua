@@ -4,18 +4,18 @@ do
 
     local function DashCast()
         local abilId = GetSpellAbilityId()
-		if abilId ~= FourCC("A00O") then
+		if abilId ~= FourCC("A004") then
 			return
 		end
 
         -- Getters
         local u = GetTriggerUnit()
-        local alv = GetUnitAbilityLevel(u, FourCC('A00O')) - 1
+        local alv = GetUnitAbilityLevel(u, FourCC('A004')) - 1
         
         -- Fetch ability stats
-        local dmg = GetAbilityField('A00O', "herodur", alv)
-        local aoe = GetAbilityField('A00O', "area", alv)
-        local range=GetAbilityField('A00O', "range", alv)
+        local dmg = GetAbilityField(FourCC('A004'), "herodur", alv)
+        local aoe = GetAbilityField(FourCC('A004'), "area", alv)
+        local range=GetAbilityField(FourCC('A004'), "range", alv)
 
         -- Objects
         local ug = CreateGroup()
@@ -30,7 +30,7 @@ do
         local ang = AngleBetweenCoords(x_0, x_2, y_0, y_2)
 
         -- Prep caster
-        local sfx = AddSpecialEffectTarget("Valiant Dash.mdx", u, 'origin')
+        local sfx = AddSpecialEffectTarget("Valiant Charge.mdx", u, 'origin')
         PauseUnit(u, true)
         SetUnitPathing( u, false ) -- collision Off
 

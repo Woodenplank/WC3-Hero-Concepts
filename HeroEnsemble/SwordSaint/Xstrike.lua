@@ -1,6 +1,6 @@
 do
     --[[
-        In-game name is "Saint's Wrath" - I'm retaining the name "Xstrike" here because it's more descriptive.
+        In-game name is "Wrath" - I'm retaining the name "Xstrike" here because it's more descriptive.
     ]]
     local function XstrikeCast()
         -- Exit early if it's the wrong ability
@@ -14,9 +14,9 @@ do
         local alv = GetUnitAbilityLevel(u, FourCC('A005')) - 1
         
         -- Fetch ability stats
-        local dmg = GetAbilityField('A005', "herodur", alv) + addSP(u, 1.3)
-        local heal= GetAbilityField('A005', "normaldur", alv) + addSP(u, 2.0)
-        local aoe = GetAbilityField('A005', "area", alv)
+        local dmg = GetAbilityField(FourCC('A005'), "herodur", alv) + addSP(u, 1.3)
+        local heal= GetAbilityField(FourCC('A005'), "normaldur", alv) + addSP(u, 2.0)
+        local aoe = GetAbilityField(FourCC('A005'), "area", alv)
         local stepsize = 175
         local range = 4*stepsize
         
@@ -26,7 +26,7 @@ do
         -- Center of spell
         local x_0 = GetUnitX(u)
         local y_0 = GetUnitY(u)
-        DestroyEffect(AddEffect("Flamestrike I.mdx", x_0, y_0))
+        DestroyEffect(AddSpecialEffect("Flamestrike I.mdx", x_0, y_0))
 
         -- "Draw points and blast them"
         local dist = stepsize
@@ -44,11 +44,11 @@ do
                     if (IsUnitEnemy(u, GetOwningPlayer(pickedu))) then
                         UnitDamageTarget(u, pickedu, dmg, true, false, ATTACK_TYPE_NORMAL, DAMAGE_TYPE_NORMAL, nil)
                     else
-                        QuickHeal(pickedu, heal)
+                        QuickHealUnit(pickedu, heal)
                     end
-                    DestroyEffect(AddSpecialEffectTarget(pickedu, "Flamestrike I.mdx", 'chest'))
+                    --DestroyEffect(AddSpecialEffectTarget("Flamestrike I.mdx", pickedu, 'chest'))
                 end)
-                DestroyEffect(AddEffect("Flamestrike I.mdx", x_1, y_1))
+                DestroyEffect(AddSpecialEffect("Flamestrike I.mdx", x_1, y_1))
                 ang = ang + math.pi/2
             end
             -- move further outwards
