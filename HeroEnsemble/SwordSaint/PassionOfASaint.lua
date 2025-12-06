@@ -1,9 +1,8 @@
 do
-
     local function PoasActivate()
         -- Early exit if wrong spell
         local abilId = GetSpellAbilityId()
-		if abilId ~= FourCC("A00O") then
+		if abilId ~= FourCC("A007") then
 			return
 		end
 
@@ -17,21 +16,21 @@ do
         -- Getters (beyond Triggering Unit above)
         local x = GetUnitX(u)
         local y = GetUnitY(u)
-        local alv = GetUnitAbilityLevel(u, FourCC('A00O'))
+        local alv = GetUnitAbilityLevel(u, FourCC('A007'))
         local id = GetHandleId(u)
 
         -- Fetch ability stats
         local tinterval = 0.5
-        local dmg = (GetAbilityField('A00O', "herodur", alv) + addSP(0.3)) * tinterval
-        local aoe = GetAbilityField('A00O', "aoe", alv)
+        local dmg = (GetAbilityField(FourCC('A007'), "herodur", alv) + addSP(u, 0.3)) * tinterval
+        local aoe = GetAbilityField(FourCC('A007'), "aoe", alv)
 
         -- Dummy buff
-        FastAbilityAdd(u, 'something', alv, hide=true)
+        FastAbilityAdd(u, FourCC('S001'), alv, true)
 
         -- Speed boost
         local dummy = CreateUnit(GetOwningPlayer(u), FourCC('e000'), x, y)
-        FastAbilityAdd(dummy, 'bloodlust', 1, false)
-        IssueTargetOrdet(dummy, '``??????', u)
+        FastAbilityAdd(dummy, FourCC('A006'), 1, false)
+        IssueTargetOrder(dummy, '``??????', u)  -- TODO get the order id for casting bloodlust
         UnitApplyTimedLifeBJ( 1.5, FourCC('BTLF'), dummy)
 
         -- //////Visual
@@ -39,8 +38,8 @@ do
         -- local sfx = AddSpecialEffectTarget(u, "HolyAura.mdx", "origin")
 
         -- Swap ability option
-        BlzUnitHideAbility(u, FourCC('A00O'), true)
-        BlzUnitHideAbility(u, FourCC('DonkeyKong'), false)
+        BlzUnitHideAbility(u, FourCC('A007'), true)
+        BlzUnitHideAbility(u, FourCC('A008'), false)
 
         -- Objects
         local ug = CreateGroup()
@@ -71,8 +70,8 @@ do
             -- deactivation check
             mana_current = GetUnitState(u, UNIT_STATE_MANA ) - 0.5
             SetUnitState(u, UNIT_STATE_MANA, mana_current)
-            if ( (mana_current <= 0.5) or (GetUnitAbilityLevel(u, 'something') < 1) ) then
-                UnitRemoveAbility(u, 'something')
+            if ( (mana_current <= 0.5) or (GetUnitAbilityLevel(u, FourCC('S001')) < 1) ) then
+                UnitRemoveAbility(u, FourCC('S001'))
                 PauseTimer(t)
                 DestroyTimer(t)
                 DestroyGroup(ug)
@@ -84,17 +83,17 @@ do
     local function PoasDeactivate()
         -- Exit early if it's the wrong ability
         local abilId = GetSpellAbilityId()
-		if abilId ~= FourCC('DonkeyKong') then
+		if abilId ~= FourCC('A008') then
 			return
 		end
 
         -- Get rid of the (dummy) buff ability
         local u = GetTriggerUnit()
-        UnitRemoveAbility(u, FourCC('something'))
+        UnitRemoveAbility(u, FourCC(FourCC('S001')))
 
         -- Swap ability option
-        BlzUnitHideAbility(u, FourCC('A00O'), true)
-        BlzUnitHideAbility(u, FourCC('DonkeyKong'), false)
+        BlzUnitHideAbility(u, FourCC('A007'), true)
+        BlzUnitHideAbility(u, FourCC('A008'), false)
         -- END --
     end
 

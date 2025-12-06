@@ -8,18 +8,18 @@ do
     ]]
     local function GuardCast()
         local abilId = GetSpellAbilityId()
-		if abilId ~= FourCC("A00O") then
+		if abilId ~= FourCC("A001") then
 			return
 		end
 
         -- Getters
         local u = GetTriggerUnit()
-        local alv = GetUnitAbilityLevel(u, FourCC('A00O')) - 1
+        local alv = GetUnitAbilityLevel(u, FourCC('A001')) - 1
         local id = GetHandleId(u)
 
         -- Fetch ability stats
-        local deflectchance = GetAbilityField('A00O', "aoe", alv)
-        local dur=GetAbilityField('A00O', "normaldur", alv)
+        local deflectchance = GetAbilityField(FourCC('A001'), "aoe", alv)
+        local dur=GetAbilityField(FourCC('A001'), "normaldur", alv)
 
         -- Dummy (buff) ability
         FastAbilityAdd(u, 'which_ability', alv, hide=true)
