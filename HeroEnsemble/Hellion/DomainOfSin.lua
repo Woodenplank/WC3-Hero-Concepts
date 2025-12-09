@@ -76,7 +76,7 @@ do
                 end
             end)
             -- Self heal (if within aura range)
-            if Dist(x,GetUnitX(u),y,GetUnitY(u)) <= 400 then
+            if Distance(x,GetUnitX(u),y,GetUnitY(u)) <= 400 then
                 QuickHealUnit(u, heal)
             end
 
