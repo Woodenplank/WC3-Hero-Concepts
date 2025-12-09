@@ -15,7 +15,7 @@ local cond = Condition(function() return
         SetUnitY(caster, y)
         SetUnitFacingToFaceUnitTimed(caster, target, 0)
         SetUnitAnimation( caster, "spell throw gold alternate" )
-        UnitDamageTarget(caster, target, damage, true, false, ATTACK_TYPE_NORMAL, DAMAGE_TYPE_NORMAL, nil)
+        UnitDamageTarget(caster, target, damage, true, false, ATTACK_TYPE_HERO, DAMAGE_TYPE_ENHANCED, nil)
         DestroyEffect(AddSpecialEffectTarget("Objects\\Spawnmodels\\Critters\\Albatross\\CritterBloodAlbatross.mdl", target, "chest"))
     end
 
