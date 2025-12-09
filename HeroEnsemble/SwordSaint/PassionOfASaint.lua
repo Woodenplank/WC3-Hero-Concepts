@@ -8,7 +8,7 @@ do
 
         -- Early exit if no mana buffer
         local u = GetTriggerUnit()
-        local mana_current = GetUnitState(u, UNIT_STATE_MANA )
+        local mana_current = GetUnitState(u, UNIT_STATE_MANA)
         if (mana_current <= 5.0) then
             return
         end
@@ -16,8 +16,8 @@ do
         -- Getters (beyond Triggering Unit above)
         local x = GetUnitX(u)
         local y = GetUnitY(u)
-        local alv = GetUnitAbilityLevel(u, FourCC('A007'))
-        local id = GetHandleId(u)
+        local alv = GetUnitAbilityLevel(u, FourCC('A007')) - 1
+        --local id = GetHandleId(u)
 
         -- Fetch ability stats
         local tinterval = 0.5
@@ -25,12 +25,12 @@ do
         local aoe = GetAbilityField(FourCC('A007'), "aoe", alv)
 
         -- Dummy buff
-        FastAbilityAdd(u, FourCC('S001'), alv, true)
+        FastAbilityAdd(u, 'S001', alv+1, true)
 
         -- Speed boost
-        local dummy = CreateUnit(GetOwningPlayer(u), FourCC('e000'), x, y)
-        FastAbilityAdd(dummy, FourCC('A006'), 1, false)
-        IssueTargetOrder(dummy, '``??????', u)  -- TODO get the order id for casting bloodlust
+        local dummy = CreateUnit(GetOwningPlayer(u), FourCC('e000'), x, y, 270)
+        FastAbilityAdd(dummy, 'A006', 1, false)
+        IssueTargetOrder(dummy, "bloodlust", u)
         UnitApplyTimedLifeBJ( 1.5, FourCC('BTLF'), dummy)
 
         -- //////Visual
@@ -49,7 +49,7 @@ do
         TimerStart(t, tinterval, true, function()
             x = GetUnitX(u)
             y = GetUnitY(u)
-            local count
+            local count=0
             -- Area damage
             GroupEnumUnitsInRange(ug, x, y, aoe, nil)
             ForGroup(ug, function()
@@ -61,10 +61,10 @@ do
             end)
 
             -- Caster healing
-            QuickHeal( u, (GetUnitState(u, UNIT_STATE_MAX_LIFE)/200) )  -- 0.5% heal
+            QuickHealUnit( u, (GetUnitState(u, UNIT_STATE_MAX_LIFE)/200) )  -- 0.5% heal
             if (count > 0) then 
                 -- If an enemy is hit; bonus heal equal to damage
-                QuickHeal(u, dmg) 
+                QuickHealUnit(u, dmg) 
             end
 
             -- deactivation check
@@ -80,6 +80,8 @@ do
         -- END --
     end
 
+    ----------------------------------------------------------------------------------------------------
+
     local function PoasDeactivate()
         -- Exit early if it's the wrong ability
         local abilId = GetSpellAbilityId()
@@ -89,13 +91,14 @@ do
 
         -- Get rid of the (dummy) buff ability
         local u = GetTriggerUnit()
-        UnitRemoveAbility(u, FourCC(FourCC('S001')))
+        UnitRemoveAbility(u, FourCC('S001'))
 
         -- Swap ability option
         BlzUnitHideAbility(u, FourCC('A007'), true)
         BlzUnitHideAbility(u, FourCC('A008'), false)
         -- END --
     end
+
 
     -- Build triggers --
     local function CreatePoasATrig()
