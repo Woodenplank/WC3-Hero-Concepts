@@ -19,10 +19,10 @@ do
 
         -- Fetch ability stats
         local deflectchance = GetAbilityField(FourCC('A001'), "aoe", alv)
-        local dur=GetAbilityField(FourCC('A001'), "normaldur", alv)
+        local dur=GetAbilityField(FourCC('A001'), "herodur", alv)
 
         -- Dummy (buff) ability
-        FastAbilityAdd(u, 'which_ability', alv, hide=true)
+        FastAbilityAdd(u, 'S002', alv+1, true)
 
         -- Objects
         local t = CreateTimer()
@@ -35,7 +35,7 @@ do
         TimerStart(t, dur, false, function()
             AddUnitAnimationProperties(u, 'Lumber', true)
             AddUnitAnimationProperties(u, 'Defend', false)
-            DestroyEffect(t)
+            DestroyEffect(sfx)
             PauseTimer(t)
             DestroyTimer(t)
         end)
@@ -56,24 +56,28 @@ do
         Some implementation of damage detection
         ...
         ...
+            local dmg_inc = GetEventDamage()
+            TriggerRegisterAnyUnitEventBJ(tr, EVENT_PLAYER_UNIT_DAMAGED)
     ]]
     local function GuardDeflect()
-        local guard = DamageEventTarget
-        local atcker= DamageEventSource
+        local guard = GetTriggerUnit()
+        local atcker= GetEventDamageSource()
         -- Get DummyBuffAbility level
-        local alv = GetUnitAbilityLevel(u, FourCC('which_ability'))
+        local alv = GetUnitAbilityLevel(guard, FourCC('S002'))
         if (alv <= 0) then
             return
         end
-        local deflectchance = GetAbilityField(FourCC('A001'), "aoe", alv-1)
+        local dmg_inc = GetEventDamage()
+        local deflectchance = GetAbilityField(FourCC('A001'), "aoe", alv)
         if (math.random() <= deflectchance) then
-            if (IsDamageMelee) then
-                local dmg = DamageEventPrevAmount * 0.5
-                NextDamageType = DamageEventAttackT
+            if (true) then
+                local dmg = dmg_inc * 0.5
                 UnitDamageTarget(guard, atcker, dmg, true, false, ATTACK_TYPE_NORMAL, DAMAGE_TYPE_NORMAL, nil)
-                DamageEventAmount = dmg
-            elseif (IsDamageRanged) then
-                DamageEventAmount = DamageEventAmount * 0.1
+                BlzSetEventDamage(dmg)
+            -- TODO Implement option for melee/ranged damage check
+            -- elseif (IsDamageRanged) then
+            --     local dmg = dmg_inc * 0.1
+            --     BlzSetEventDamage(dmg)
             end
             DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Human\\Defend\\DefendCaster.mdl", guard, 'chest'))
         end
@@ -82,7 +86,7 @@ do
     -- Build trigger --
     local function CreateGuardDeflectTrig()
         local tr = CreateTrigger()
-        TriggerRegisterVariableEvent(tr, udg_PreDamageEvent, EQUAL, 1.0)
+        TriggerRegisterAnyUnitEventBJ(tr, EVENT_PLAYER_UNIT_DAMAGED)
         TriggerAddAction(tr, GuardDeflect)
     end
     OnInit.trig(CreateGuardDeflectTrig)
