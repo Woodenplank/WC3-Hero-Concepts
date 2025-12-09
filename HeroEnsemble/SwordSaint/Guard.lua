@@ -49,4 +49,41 @@ do
         TriggerAddAction(tr, GuardCast)
     end
     OnInit.trig(CreateGuardTrig)
+
+-----------------------------------------------------------------------------------------------------------------------------
+    --[[
+        ...
+        Some implementation of damage detection
+        ...
+        ...
+    ]]
+    local function GuardDeflect()
+        local guard = DamageEventTarget
+        local atcker= DamageEventSource
+        -- Get DummyBuffAbility level
+        local alv = GetUnitAbilityLevel(u, FourCC('which_ability'))
+        if (alv <= 0) then
+            return
+        end
+        local deflectchance = GetAbilityField(FourCC('A001'), "aoe", alv-1)
+        if (math.random() <= deflectchance) then
+            if (IsDamageMelee) then
+                local dmg = DamageEventPrevAmount * 0.5
+                NextDamageType = DamageEventAttackT
+                UnitDamageTarget(guard, atcker, dmg, true, false, ATTACK_TYPE_NORMAL, DAMAGE_TYPE_NORMAL, nil)
+                DamageEventAmount = dmg
+            elseif (IsDamageRanged) then
+                DamageEventAmount = DamageEventAmount * 0.1
+            end
+            DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Human\\Defend\\DefendCaster.mdl", guard, 'chest'))
+        end
+        -- END --
+    end
+    -- Build trigger --
+    local function CreateGuardDeflectTrig()
+        local tr = CreateTrigger()
+        TriggerRegisterVariableEvent(tr, udg_PreDamageEvent, EQUAL, 1.0)
+        TriggerAddAction(tr, GuardDeflect)
+    end
+    OnInit.trig(CreateGuardDeflectTrig)
 end
