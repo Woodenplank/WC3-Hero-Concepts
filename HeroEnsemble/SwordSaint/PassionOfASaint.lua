@@ -1,4 +1,12 @@
 do
+    --[[
+    Engulfs the Sword Saint in Flames of Passion gaining a burst of speed and beginning to heal herself for 1% of max health per second. 
+    Consumes 1 CP per second to maintain the flame, dealing constant damage to nearby foes, granting bonus healing Sword Saint if an enemy is hit. 
+    
+    |cffffcc00Level 1|r - <A007:ANcl,HeroDur1> damage and bonus healing per second. 
+    |cffffcc00Level 2|r - <A007:ANcl,HeroDur2> damage and bonus healing per second. 
+    |cffffcc00Level 3|r - <A007:ANcl,HeroDur3> damage and bonus healing per second.
+    ]]
     local function PoasActivate()
         -- Early exit if wrong spell
         local abilId = GetSpellAbilityId()

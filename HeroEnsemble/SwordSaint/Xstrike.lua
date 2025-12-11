@@ -1,6 +1,12 @@
 do
     --[[
         In-game name is "Wrath" - I'm retaining the name "Xstrike" here because it's more descriptive.
+        
+        Causes a burst of spirit-fire in an cross pattern around the Sword-Saint, dealing damage (|cffdbb8eb+130% Focus|r) to foes struck and healing allies (|cffdbb8eb+200% Focus|r).
+        
+        |cffffcc00Level 1|r - <A005:ANcl,HeroDur1> damage, <A005:ANcl,Dur1> healing. 
+        |cffffcc00Level 2|r - <A005:ANcl,HeroDur2> damage, <A005:ANcl,Dur2> healing. 
+        |cffffcc00Level 3|r - <A005:ANcl,HeroDur3> damage, <A005:ANcl,Dur3> healing.
     ]]
     local function XstrikeCast()
         -- Exit early if it's the wrong ability

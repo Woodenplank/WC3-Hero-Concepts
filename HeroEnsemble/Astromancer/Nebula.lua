@@ -1,6 +1,13 @@
 do 
     --[[ See Discussion at 
         https://www.hiveworkshop.com/threads/delayed-actions-and-mui-management-in-lua.367956/
+
+        Summons a churning vortex of stardust that deals continuous damage to enemies within target area, lasting <A003:ANcl,Dur1> seconds.
+        While active, the Nebula slows enemy movement and summons Star Sprites.
+
+        |cffffcc00Level 1|r - <A003:ANcl,HeroDur1> damage per second. <A00C:Aasl,DataA1,%>% slow.
+        |cffffcc00Level 2|r - <A003:ANcl,HeroDur2> damage per second. <A00C:Aasl,DataA2,%>% slow.
+        |cffffcc00Level 3|r - <A003:ANcl,HeroDur3> damage per second. <A00C:Aasl,DataA3,%>% slow.
     ]]
 
     local function NebulaCast()

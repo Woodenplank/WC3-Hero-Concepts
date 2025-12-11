@@ -1,5 +1,10 @@
 do
     --[[
+    Dashes to target location, dealing damage (|cffdbb8eb+100% Focus|r) to enemies along the path. 
+    
+    |cffffcc00Level 1|r - <A004:ANcl,HeroDur1> damage, <A004:ANcl,Cool1> seconds cooldown. 
+    |cffffcc00Level 2|r - <A004:ANcl,HeroDur2> damage, <A004:ANcl,Cool2> seconds cooldown. 
+    |cffffcc00Level 3|r - <A004:ANcl,HeroDur3> damage, <A004:ANcl,Cool3> seconds cooldown.
     ]]
 
     local function DashCast()

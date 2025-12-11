@@ -81,6 +81,10 @@ do
     -- END --
     end
 
+    -- Damage Detection/Shielding
+    
+
+
     -- Build trigger --
     local function CreateNetherWeaverTrig()
         local tr = CreateTrigger()

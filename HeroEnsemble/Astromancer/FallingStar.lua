@@ -1,6 +1,10 @@
 do 
     --[[
-    
+    Calls down a star to crash against the target area, dealing staggering damage (|cffdbb8eb+140% Focus|r) upon arrival. A Celestial spirit will spawn from the crater to attack nearby foes.
+
+    |cffffcc00Level 1|r - <A00A:ANcl,HeroDur1> damage.
+    |cffffcc00Level 2|r - <A00A:ANcl,HeroDur2> damage.
+    |cffffcc00Level 3|r - <A00A:ANcl,HeroDur3> damage.
     ]]
     local function FallingStar_W()
         -- Exit early if this is the wrong ability

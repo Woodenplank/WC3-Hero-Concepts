@@ -1,6 +1,11 @@
 do
     --[[
+    Spawns an unstable Sun at the target area, burning nearby enemies for terrible, terrible damage.
+    If struck by a Falling Star, the Sun will collapse into a black hole, which pulls in nearby foes. |nLasts <A013:ANcl,Dur1> seconds.
 
+    |cffffcc00Level 1|r - <A00B:ANcl,HeroDur1> damage per second.
+    |cffffcc00Level 2|r - <A00B:ANcl,HeroDur2> damage per second.
+    |cffffcc00Level 3|r - <A00B:ANcl,HeroDur3> damage per second.
     ]]
     local function CollapseSun_X()
         -- Exit early if this is the wrong ability

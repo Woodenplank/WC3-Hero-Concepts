@@ -1,11 +1,10 @@
 do
 --[[
-local cond = Condition(function() return
-        IsUnitEnemy(GetFilterUnit(),player)
-        and not IsUnitType(GetFilterUnit(), UNIT_TYPE_DEAD)
-        and not IsUnitType(GetFilterUnit(), UNIT_TYPE_STRUCTURE)
-        and not BlzIsUnitInvulnerable(GetFilterUnit())
-    end)
+    Jumps to a target and begins a bloodletting, striking random nearby foes for instant damage (|cffdbb8eb+35% Focus|r). 
+    
+    |cffffcc00Level 1|r - <A000:ANcl,HeroDur1> base damage, <A000:ANcl,Dur1> jumps.
+    |cffffcc00Level 2|r - <A000:ANcl,HeroDur2> base damage, <A000:ANcl,Dur2> jumps.
+    |cffffcc00Level 3|r - <A000:ANcl,HeroDur3> base damage, <A000:ANcl,Dur3> jumps.
 ]]
 
     local function DoSlashEffect(caster, target, damage)

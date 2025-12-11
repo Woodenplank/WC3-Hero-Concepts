@@ -1,5 +1,7 @@
 do
-
+    --[[
+    After a brief delay; teleport to target area in a blaze of hellfire, dealing <A00Q:ANcl,HeroDur1> damage to all nearby enemies on arrival.
+    ]]
     local function HellgateCast()
         local abilId = GetSpellAbilityId()
 		if abilId ~= FourCC("A00Q") then

@@ -1,12 +1,19 @@
 do
     --[[
         tooltip:
+        The Hero raises her Guard, granting her a chance to parry and riposte melee attackers, reflecting 50% of damage taken.|nRanged attacks are not riposted, but instead Deflected for 90% damage reduction.
+
+        |cffffcc00Level 1|r - <A001:ANcl,Area1,%>% chance to parry, lasts <A001:ANcl,HeroDur1> seconds.
+        |cffffcc00Level 2|r - <A001:ANcl,Area2,%>% chance to parry, lasts <A001:ANcl,HeroDur2> seconds.
+        |cffffcc00Level 3|r - <A001:ANcl,Area3,%>% chance to parry, lasts <A001:ANcl,HeroDur3> seconds.
+
 
         The 'Deflect' portion of this ability relies on a Damage Detection system, do catch Normal Attacks against the Hero.
-        It'll work in conjunction with a simple "Unit has Buff" check.
-        This particular trigger just handles the cast and expiration effects.
+        It'll work in conjunction with a simple "Unit has Buff" check.  
     ]]
+        
     local function GuardCast()
+        --This particular trigger just handles the cast and expiration effects.
         local abilId = GetSpellAbilityId()
 		if abilId ~= FourCC("A001") then
 			return

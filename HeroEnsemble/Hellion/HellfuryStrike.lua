@@ -1,6 +1,10 @@
 do
 	--[[
+		Slams a target foe in melee range, dealing instant damage (|cffdbb8eb+120% Focus|r). If 3 or more enemies are within range of the main target the damage is doubled, but is distributed evenly among all targets.
 
+		|cffffcc00Level 1|r - <A00I:Ancl,HeroDur1> damage.
+		|cffffcc00Level 2|r - <A00I:Ancl,HeroDur2> damage.
+		|cffffcc00Level 3|r - <A00I:Ancl,HeroDur3> damage.
 	]]
 	local function HellfuryStrikeu()
 		local abilId = GetSpellAbilityId()
