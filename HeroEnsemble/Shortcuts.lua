@@ -1,4 +1,3 @@
-
 ---@param which_unit unit
 ---@param which_ability integer | FourCC string
 ---@param which_level integer
@@ -8,4 +7,11 @@ function FastAbilityAdd(which_unit, which_ability, which_level, hide)
     UnitAddAbility(which_unit, FourCC(which_ability))
     SetUnitAbilityLevel(which_unit, FourCC(which_ability), which_level)
     BlzUnitHideAbility(which_unit, FourCC(which_ability), hide)
+end
+
+---@param which_unit unit
+---@param which_type string
+---@return boolean
+function UnitTypeCheck(which_unit, which_type)
+    return GetUnitTypeId(which_unit) == FourCC(which_type)
 end
