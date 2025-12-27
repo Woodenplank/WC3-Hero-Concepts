@@ -6,10 +6,6 @@ do
         |cffffcc00Level 1|r - <A001:ANcl,Area1,%>% chance to parry, lasts <A001:ANcl,HeroDur1> seconds.
         |cffffcc00Level 2|r - <A001:ANcl,Area2,%>% chance to parry, lasts <A001:ANcl,HeroDur2> seconds.
         |cffffcc00Level 3|r - <A001:ANcl,Area3,%>% chance to parry, lasts <A001:ANcl,HeroDur3> seconds.
-
-
-        The 'Deflect' portion of this ability relies on a Damage Detection system, do catch Normal Attacks against the Hero.
-        It'll work in conjunction with a simple "Unit has Buff" check.  
     ]]
         
     local function GuardCast()
@@ -58,43 +54,59 @@ do
     OnInit.trig(CreateGuardTrig)
 
 -----------------------------------------------------------------------------------------------------------------------------
-    --[[
-        ...
-        Some implementation of damage detection
-        ...
-        ...
-            local dmg_inc = GetEventDamage()
-            TriggerRegisterAnyUnitEventBJ(tr, EVENT_PLAYER_UNIT_DAMAGED)
-    ]]
-    local function GuardDeflect()
-        local guard = GetTriggerUnit()
-        local atcker= GetEventDamageSource()
-        -- Get DummyBuffAbility level
-        local alv = GetUnitAbilityLevel(guard, FourCC('S002'))
+
+    local function GuardVisual(instance)
+        local x_source = GetUnitX(instance.source.unit)
+        local y_source = GetUnitY(instance.source.unit)
+        local x_target = GetUnitX(instance.target.unit)
+        local y_target = GetUnitY(instance.target.unit)
+        local ang = AngleBetweenCoords(x_target,x_source, y_target,y_source)
+        local sfx_x, sfx_y = PolarStep(x_target, y_target, 85, ang)
+        --local sfx = AddSpecialEffect("Abilities\\Spells\\Undead\\ReplenishHealth\\ReplenishHealthCasterOverhead.mdl", sfx_x, sfx_y)
+        local sfx = AddSpecialEffect("Abilities\\Spells\\Human\\Defend\\DefendCaster.mdl", sfx_x, sfx_y)
+        --set udg_BAmr_Spef_Current_Height[udg_BAmr_Loop] = GetLocationZ(udg_BAmr_Point[1])
+        BlzSetSpecialEffectZ(sfx, 125+GetUnitFlyHeight(instance.target.unit))
+        BlzSetSpecialEffectColor(sfx, 255, 255, 255)
+        BlzSetSpecialEffectScale(sfx, 0.9)
+        BlzSetSpecialEffectAlpha(sfx, 85)
+        BlzSetSpecialEffectTimeScale(sfx, 7.5)
+        --BlzSetSpecialEffectOrientation(sfx, (1.57 + ang), 1.57, 1.57) -- yaw, pitch roll
+        BlzSetSpecialEffectOrientation(sfx, (1.57 + ang), 0, 0) -- yaw, pitch roll
+        DestroyEffect(sfx)
+    end
+
+    local function GuardDeflection()
+        local instance = CreateFromEvent()
+        -- Early return if spell damage
+        if (instance.isSpell) then
+            return
+        end
+        -- Early return if the unit doesn't have the shield buff (dummy ability)
+        local alv = GetUnitAbilityLevel(instance.target.unit, FourCC('S002'))
         if (alv <= 0) then
             return
         end
-        local dmg_inc = GetEventDamage()
-        local deflectchance = GetAbilityField(FourCC('A001'), "aoe", alv)
+        
+        local deflectchance = GetAbilityField(FourCC('A001'), "aoe", alv-1)
         if (math.random() <= deflectchance) then
-            if (true) then
-                local dmg = dmg_inc * 0.5
-                UnitDamageTarget(guard, atcker, dmg, true, false, ATTACK_TYPE_NORMAL, DAMAGE_TYPE_NORMAL, nil)
-                BlzSetEventDamage(dmg)
-            -- TODO Implement option for melee/ranged damage check
-            -- elseif (IsDamageRanged) then
-            --     local dmg = dmg_inc * 0.1
-            --     BlzSetEventDamage(dmg)
+            if (instance.source.isMelee) then
+                local reflect = instance.damageamount * 0.5
+                UnitDamageTarget(instance.target.unit, instance.source.unit, reflect, true, false, ATTACK_TYPE_NORMAL, DAMAGE_TYPE_NORMAL, nil)
+                BlzSetEventDamage(reflect)  -- other half of damage "goes through"
+                GuardVisual(instance)
+            elseif (instance.source.isRanged) then
+                BlzSetEventDamage(instance.damageamount*0.1)
+                GuardVisual(instance)
             end
-            DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Human\\Defend\\DefendCaster.mdl", guard, 'chest'))
         end
         -- END --
     end
+
     -- Build trigger --
     local function CreateGuardDeflectTrig()
         local tr = CreateTrigger()
         TriggerRegisterAnyUnitEventBJ(tr, EVENT_PLAYER_UNIT_DAMAGED)
-        TriggerAddAction(tr, GuardDeflect)
+        TriggerAddAction(tr, GuardDeflection)
     end
     OnInit.trig(CreateGuardDeflectTrig)
 end

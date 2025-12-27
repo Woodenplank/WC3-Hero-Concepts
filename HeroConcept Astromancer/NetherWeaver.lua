@@ -37,7 +37,7 @@ do
 		end)
 
         -- Dummy ability (buff)
-        local NetherWeaveShieldSFX[id] = AddSpecialEffectTarget("PinkMagicShield_.mdx", u, 'origin')
+        NetherWeaveShieldSFX[id] = AddSpecialEffectTarget("PinkMagicShield_.mdx", u, 'origin')
         UnitAddAbility(u, FourCC('A00F'))
         SetUnitAbilityLevel(u, FourCC('A00F'), alv+1)
         BlzUnitHideAbility(u, FourCC('A00F'), true)
@@ -80,45 +80,35 @@ do
     -- END --
     end
 
-    -- Damage Detection/Shielding
-    local function NetherWeaveShieldAbsorb()
-        local shielded = GetTriggerUnit()
-        local id = GetHandleId(shielded)
-        local atcker= GetEventDamageSource()
-        -- Get DummyBuffAbility level
-        local alv = GetUnitAbilityLevel(shielded, FourCC('A00F'))
-        
+    local function NeverWeaveShielding()
+
+        local instance = CreateFromEvent()
+
         -- Early return if the unit doesn't have the shield buff (dummy ability)
+        local alv = GetUnitAbilityLevel(instance.target.unit, FourCC('A00F'))
         if (alv <= 0) then
             return
         end
 
-        -- Reduce saved shield amount and then nullify damage
-        local dmg_inc = GetEventDamage()
-        local shield_remaining = (NetherWeaveShield[id] or 0)
-
-        if shield_remaining > dmg_inc then
-            shield_remaining = shield_remaining - dmg_inc
-            dmg_inc = 0
-        elseif shield_remaining < dmg_inc then
-            dmg_inc = dmg_inc - shield_remaining
-            shield_remaining = 0
+        local shield_remain = (NetherWeaveShield[instance.target.id] or 0)
+        if shield_remain > instance.damageamount then
+            shield_remain = shield_remain - instance.damageamount
+            BlzSetEventDamage(0)
+        elseif shield_remain < instance.damageamount then
+            BlzSetEventDamage(instance.damageamount - shield_remain)
+            shield_remain = 0
         end
-        BlzSetEventDamage(dmg_inc)
         
         -- Update shield table
-        if shield_remaining == 0 then
+        if shield_remain == 0 then
             NetherWeaveShield[id] = nil
             DestroyEffect(NetherWeaveShieldSFX[id])
             NetherWeaveShieldSFX[id] = nil
         else
-            NetherWeaveShield[id] = shield_remaining
+            NetherWeaveShield[instance.target.id] = shield_remain
         end
-
-        --DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Human\\Defend\\DefendCaster.mdl", shielded, 'chest'))
         -- END --
     end
-
 
     -- Build triggers --
     local function CreateNetherWeaverTrig()
@@ -129,7 +119,7 @@ do
     local function CreateNetherWeaverShieldTrig()
         local tr = CreateTrigger()
         TriggerRegisterAnyUnitEventBJ(tr, EVENT_PLAYER_UNIT_DAMAGED)
-        TriggerAddAction(tr, NetherWeaveShieldAbsorb)
+        TriggerAddAction(tr, NetherWeaveShielding)
     end
 
     OnInit.trig(CreateNetherWeaverTrig)
