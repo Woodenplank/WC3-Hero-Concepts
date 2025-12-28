@@ -61,17 +61,14 @@ do
         local x_target = GetUnitX(instance.target.unit)
         local y_target = GetUnitY(instance.target.unit)
         local ang = AngleBetweenCoords(x_target,x_source, y_target,y_source)
-        local sfx_x, sfx_y = PolarStep(x_target, y_target, 85, ang)
-        --local sfx = AddSpecialEffect("Abilities\\Spells\\Undead\\ReplenishHealth\\ReplenishHealthCasterOverhead.mdl", sfx_x, sfx_y)
-        local sfx = AddSpecialEffect("Abilities\\Spells\\Human\\Defend\\DefendCaster.mdl", sfx_x, sfx_y)
-        --set udg_BAmr_Spef_Current_Height[udg_BAmr_Loop] = GetLocationZ(udg_BAmr_Point[1])
-        BlzSetSpecialEffectZ(sfx, 125+GetUnitFlyHeight(instance.target.unit))
+        local sfx_x, sfx_y = PolarStep(x_target, y_target, 65, ang)
+        local sfx = AddSpecialEffect("Abilities\\Spells\\Undead\\ReplenishHealth\\ReplenishHealthCasterOverhead.mdl", sfx_x, sfx_y)
+        BlzSetSpecialEffectZ(sfx, 100+GetUnitFlyHeight(instance.target.unit))
         BlzSetSpecialEffectColor(sfx, 255, 255, 255)
         BlzSetSpecialEffectScale(sfx, 0.9)
         BlzSetSpecialEffectAlpha(sfx, 85)
         BlzSetSpecialEffectTimeScale(sfx, 7.5)
-        --BlzSetSpecialEffectOrientation(sfx, (1.57 + ang), 1.57, 1.57) -- yaw, pitch roll
-        BlzSetSpecialEffectOrientation(sfx, (1.57 + ang), 0, 0) -- yaw, pitch roll
+        BlzSetSpecialEffectOrientation(sfx, (1.57 + ang), 1.57, 1.57) -- yaw, pitch roll
         DestroyEffect(sfx)
     end
 
