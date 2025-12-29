@@ -13,7 +13,13 @@ end
 ---@param which_type string
 ---@return boolean
 function UnitTypeCheck(which_unit, which_type)
-    return GetUnitTypeId(which_unit) == FourCC(which_type)
+    if type(which_type) == "number" then
+        return GetUnitTypeId(which_unit) == which_type
+    else
+        return GetUnitTypeId(which_unit) == FourCC(which_type)
+    end
+    -- safe return
+    return false
 end
 
 
