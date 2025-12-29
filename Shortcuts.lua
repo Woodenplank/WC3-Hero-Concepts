@@ -15,3 +15,14 @@ end
 function UnitTypeCheck(which_unit, which_type)
     return GetUnitTypeId(which_unit) == FourCC(which_type)
 end
+
+
+---@param num number
+---@return string
+function N2S(num)
+    if type(num) == "integer" then
+        return string.format("%d", num)
+    else
+        return string.format("%.2f", num)
+    end
+end
