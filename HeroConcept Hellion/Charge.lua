@@ -5,19 +5,20 @@ do
     ]]
 
     local function ChargeCast()
-        local abilId = GetSpellAbilityId()
-		if abilId ~= FourCC("A00O") then
+        local abilId = FourCC('A00O')
+        local castId = GetSpellAbilityId()
+		if castId ~= abilId then
 			return
 		end
 
         -- Getters
         local u = GetTriggerUnit()
-        local alv = GetUnitAbilityLevel(u, FourCC('A00O')) - 1
+        local alv = GetUnitAbilityLevel(u, abilId) - 1
         
         -- Fetch ability stats
-        local dmg = GetAbilityField('A00O', "herodur", alv)
-        local aoe = GetAbilityField('A00O', "area", alv)
-        local range=GetAbilityField('A00O', "range", alv)
+        local dmg = GetAbilityField(abilId, "herodur", alv)
+        local aoe = GetAbilityField(abilId, "area", alv)
+        local range=GetAbilityField(abilId, "range", alv)
 
         -- Sinhammer mod
         local SH_alv = GetUnitAbilityLevel(u, SHbuff_abilId)
