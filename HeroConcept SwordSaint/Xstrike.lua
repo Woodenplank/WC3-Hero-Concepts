@@ -11,18 +11,18 @@ do
     local function XstrikeCast()
         -- Exit early if it's the wrong ability
         local abilId = GetSpellAbilityId()
-		if abilId ~= FourCC('A005') then
+		if abilId ~= HSS_id_xstrike then
 			return
 		end
 
         -- Getters
         local u = GetTriggerUnit()
-        local alv = GetUnitAbilityLevel(u, FourCC('A005')) - 1
+        local alv = GetUnitAbilityLevel(u, HSS_id_xstrike) - 1
         
         -- Fetch ability stats
-        local dmg = GetAbilityField(FourCC('A005'), "herodur", alv) + addSP(u, 1.3)
-        local heal= GetAbilityField(FourCC('A005'), "normaldur", alv) + addSP(u, 2.0)
-        local aoe = GetAbilityField(FourCC('A005'), "area", alv)
+        local dmg = GetAbilityField(HSS_id_xstrike, "herodur", alv) + addSP(u, 1.3)
+        local heal= GetAbilityField(HSS_id_xstrike, "normaldur", alv) + addSP(u, 2.0)
+        local aoe = GetAbilityField(HSS_id_xstrike, "area", alv)
         local stepsize = 175
         local range = 4*stepsize
         

@@ -10,7 +10,7 @@ do
     local function PoasActivate()
         -- Early exit if wrong spell
         local abilId = GetSpellAbilityId()
-		if abilId ~= FourCC("A007") then
+		if abilId ~= HSS_id_passionON then
 			return
 		end
 
@@ -24,13 +24,13 @@ do
         -- Getters (beyond Triggering Unit above)
         local x = GetUnitX(u)
         local y = GetUnitY(u)
-        local alv = GetUnitAbilityLevel(u, FourCC('A007')) - 1
+        local alv = GetUnitAbilityLevel(u, HSS_id_passionON) - 1
         --local id = GetHandleId(u)
 
         -- Fetch ability stats
         local tinterval = 0.5
-        local dmg = (GetAbilityField(FourCC('A007'), "herodur", alv) + addSP(u, 0.3)) * tinterval
-        local aoe = GetAbilityField(FourCC('A007'), "aoe", alv)
+        local dmg = (GetAbilityField(HSS_id_passionON, "herodur", alv) + addSP(u, 0.3)) * tinterval
+        local aoe = GetAbilityField(HSS_id_passionON, "aoe", alv)
 
         -- Dummy buff
         FastAbilityAdd(u, 'S001', alv+1, true)
@@ -46,8 +46,8 @@ do
         -- local sfx = AddSpecialEffectTarget(u, "HolyAura.mdx", "origin")
 
         -- Swap ability option
-        BlzUnitHideAbility(u, FourCC('A007'), true)
-        BlzUnitHideAbility(u, FourCC('A008'), false)
+        BlzUnitHideAbility(u, HSS_id_passionON, true)
+        BlzUnitHideAbility(u, HSS_id_passionOFF, false)
 
         -- Objects
         local ug = CreateGroup()
@@ -78,8 +78,8 @@ do
             -- deactivation check
             mana_current = GetUnitState(u, UNIT_STATE_MANA ) - 0.5
             SetUnitState(u, UNIT_STATE_MANA, mana_current)
-            if ( (mana_current <= 0.5) or (GetUnitAbilityLevel(u, FourCC('S001')) < 1) ) then
-                UnitRemoveAbility(u, FourCC('S001'))
+            if ( (mana_current <= 0.5) or (GetUnitAbilityLevel(u, HSS_id_passionbuff) < 1) ) then
+                UnitRemoveAbility(u, HSS_id_passionbuff)
                 PauseTimer(t)
                 DestroyTimer(t)
                 DestroyGroup(ug)
@@ -93,17 +93,17 @@ do
     local function PoasDeactivate()
         -- Exit early if it's the wrong ability
         local abilId = GetSpellAbilityId()
-		if abilId ~= FourCC('A008') then
+		if abilId ~= HSS_id_passionOFF then
 			return
 		end
 
         -- Get rid of the (dummy) buff ability
         local u = GetTriggerUnit()
-        UnitRemoveAbility(u, FourCC('S001'))
+        UnitRemoveAbility(u, HSS_id_passionbuff)
 
         -- Swap ability option
-        BlzUnitHideAbility(u, FourCC('A007'), true)
-        BlzUnitHideAbility(u, FourCC('A008'), false)
+        BlzUnitHideAbility(u, HSS_id_passionON, true)
+        BlzUnitHideAbility(u, HSS_id_passionOFF, false)
         -- END --
     end
 

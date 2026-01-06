@@ -9,7 +9,7 @@ do
     local function FallingStar_W()
         -- Exit early if this is the wrong ability
         local abilId = GetSpellAbilityId()
-        if abilId ~= FourCC("A00A") then
+        if abilId ~= AST_id_fallingstar then
             return
         end
  
@@ -20,8 +20,8 @@ do
         local lvl = GetUnitAbilityLevel(u, abilId) - 1
  
         -- Stats
-        local dmg = GetAbilityField(FourCC('A00A'), "herodur", lvl)
-        local aoe = GetAbilityField(FourCC('A00A'), "area", lvl)
+        local dmg = GetAbilityField(AST_id_fallingstar, "herodur", lvl)
+        local aoe = GetAbilityField(AST_id_fallingstar, "area", lvl)
  
         -- Objects
         local ug = CreateGroup()

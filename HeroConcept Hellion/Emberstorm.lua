@@ -17,19 +17,19 @@ do
     local function EmberstormCast()
     -- Exit early if this is the wrong ability
     local abilId = GetSpellAbilityId()
-    if abilId ~= FourCC("A00M") then
+    if abilId ~= HEL_id_emberstorm then
         return
     end
 
     -- Getters
     local u = GetTriggerUnit()
-    local alv = GetUnitAbilityLevel(u, FourCC('A00M'))
+    local alv = GetUnitAbilityLevel(u, HEL_id_emberstorm)
     
     -- Ability stats
     local tinterval = 0.5
     local dmg = (60 + 20*(alv)) * tinterval
-    local aoe = GetAbilityField(FourCC('A00M'), "aoe", alv-1)
-    local dur = GetAbilityField(FourCC('A00M'), "herodur", alv-1)
+    local aoe = GetAbilityField(HEL_id_emberstorm, "aoe", alv-1)
+    local dur = GetAbilityField(HEL_id_emberstorm, "herodur", alv-1)
 
     -- Objects
     local ug = CreateGroup()

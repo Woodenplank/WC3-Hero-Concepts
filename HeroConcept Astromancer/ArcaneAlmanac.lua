@@ -1,21 +1,21 @@
+do
 --[[
 In-game Tooltip
 "Passive: All ability damage has a chance to critically hit, dealing 150% of normal damage.
 Active: Empower your next Falling Star. Guaranteeing a critical, adding 5% bonus damage per active Sprite, and the Celestial lasts 30% longer."
 ]]
 
--- Globals --
-AlmanacBuff_AbilId = FourCC('A00E')
-Almanac_AbilId = FourCC('A00D')
--------------
+    -- Globals --
+    AlmanacBuff_AbilId = AST_id_almanacbuff
+    Almanac_AbilId = AST_id_almanac
+    -------------
 
-do
     --[[ The below trigger handles the >Active< part.
     See further down for the global crit functions. ]]
     local function ArcaneAlmanacActive()
         -- Exit early if this is the wrong ability
         local abilId = GetSpellAbilityId()
-        if abilId ~= FourCC("A00D") then
+        if abilId ~= AST_id_almanac then
             return
         end
 
@@ -33,6 +33,7 @@ do
         local dur = GetAbilityField(Almanac_AbilId, "normaldur", alv)
 
         -- Dummy buff ability (also used to check bonus on Falling Star)
+        UnitRemoveAbility(u, AlmanacBuff_AbilId)
         UnitAddAbility(u, AlmanacBuff_AbilId)
         SetUnitAbilityLevel(u, AlmanacBuff_AbilId, count)
         BlzUnitHideAbility(u, AlmanacBuff_AbilId, true)

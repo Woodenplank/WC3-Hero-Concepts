@@ -13,7 +13,7 @@ do
     local function NebulaCast()
         -- Exit early if this is the wrong ability
         local abilId = GetSpellAbilityId()
-        if abilId ~= FourCC("A003") then
+        if abilId ~= AST_id_nebula then
             return
         end
  
@@ -21,11 +21,11 @@ do
         local u = GetTriggerUnit()
         local x = GetSpellTargetX()
         local y = GetSpellTargetY()
-        local lvl = GetUnitAbilityLevel(u, FourCC('A003')) - 1
+        local lvl = GetUnitAbilityLevel(u, AST_id_nebula) - 1
  
         -- Stats
-        local dmg = GetAbilityField(FourCC('A003'), "herodur", lvl) / 2
-        local aoe = GetAbilityField(FourCC('A003'), "area", lvl)
+        local dmg = GetAbilityField(AST_id_nebula, "herodur", lvl) / 2
+        local aoe = GetAbilityField(AST_id_nebula, "area", lvl)
         local dur = 7.0
  
         -- Objects

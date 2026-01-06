@@ -10,7 +10,7 @@ do
     local function CollapseSun_X()
         -- Exit early if this is the wrong ability
         local abilId = GetSpellAbilityId()
-        if abilId ~= FourCC("A00B") then
+        if abilId ~= AST_id_collapsesun then
             return
         end
 
@@ -29,9 +29,9 @@ do
         DestroyEffect(AddSpecialEffect("Shining Flare.mdx", x, y)) -- pretty spawning effect
 
         -- Stats
-        local dmg = GetAbilityField(FourCC('A00B'), "herodur", lvl) * tinterval
-        local aoe = GetAbilityField(FourCC('A00B'), "area", lvl)
-        local dur = GetAbilityField(FourCC('A00B'), "normaldur", lvl)
+        local dmg = GetAbilityField(AST_id_collapsesun, "herodur", lvl) * tinterval
+        local aoe = GetAbilityField(AST_id_collapsesun, "area", lvl)
+        local dur = GetAbilityField(AST_id_collapsesun, "normaldur", lvl)
 
         -- Check
         local Transformed = false

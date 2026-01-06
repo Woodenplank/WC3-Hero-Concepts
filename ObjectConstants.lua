@@ -1,3 +1,11 @@
+--[[
+    These variables are to be considered 
+        STATIC CONST (inline)
+
+    Declared here once, according to World Editor Object data.
+    In other words; do not fuck with them henceforth.
+]]
+
 --Heroes
 utype_SwordSaint = FourCC('H000')
 utype_Hellion = FourCC('O001')
@@ -42,6 +50,7 @@ AST_id_silver=FourCC("A00H")
 AST_id_silverbuff=FourCC('A00G')
 
 -- Hellion object data
+HEL_id_hfstrike=FourCC("A00I")
 HEL_id_charge=FourCC('A00O')
 HEL_id_domsin=FourCC('A00N')
 HEL_id_domsinbuff=FourCC('S000')

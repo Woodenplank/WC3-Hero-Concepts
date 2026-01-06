@@ -21,7 +21,7 @@ do
     local function OmnislashMain()
         -- Exit early if wrong ability
         local abilId = GetSpellAbilityId()
-		if abilId ~= FourCC("A000") then
+		if abilId ~= HSS_id_omnislash then
 			return
 		end
 
@@ -30,12 +30,12 @@ do
         local tu = GetSpellTargetUnit()
         local centerX = GetUnitX(tu)
         local centerY = GetUnitY(tu)
-        local alv = GetUnitAbilityLevel(u, FourCC('A000')) - 1
+        local alv = GetUnitAbilityLevel(u, HSS_id_omnislash) - 1
 
         -- Ability stats
-        local dmg = GetAbilityField(FourCC('A000'), "herodur", alv)
-        local aoe = GetAbilityField(FourCC('A000'), "aoe", alv)
-        local numhits=GetAbilityField(FourCC('A000'), "normaldur", alv)
+        local dmg = GetAbilityField(HSS_id_omnislash, "herodur", alv)
+        local aoe = GetAbilityField(HSS_id_omnislash, "aoe", alv)
+        local numhits=GetAbilityField(HSS_id_omnislash, "normaldur", alv)
 
         -- Objects
         local ug = CreateGroup()

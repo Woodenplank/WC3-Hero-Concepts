@@ -5,18 +5,18 @@ do
     local function TonguesOfFlameMain()
         -- Exit early if this is the wrong ability
         local abilId = GetSpellAbilityId()
-        if abilId ~= FourCC('A00P') then
+        if abilId ~= HEL_id_flametongues then
             return
         end
         -- Getters --
         local u = GetTriggerUnit()
         local x = GetUnitX(u)
         local y = GetUnitY(u)
-        local alv = GetUnitAbilityLevel(u, FourCC('A00P')) - 1
+        local alv = GetUnitAbilityLevel(u, HEL_id_flametongues) - 1
 
         -- Ability stats
-        local dmg = GetAbilityField(FourCC('A00P'), "herodur", alv) + addSP(u, 2.0)
-        local area= GetAbilityField(FourCC('A00P'), "aoe", alv)
+        local dmg = GetAbilityField(HEL_id_flametongues, "herodur", alv) + addSP(u, 2.0)
+        local area= GetAbilityField(HEL_id_flametongues, "aoe", alv)
         local tongues=7
         local tonguesteps = (2*math.pi)/tongues
 

@@ -8,7 +8,7 @@ do
 	]]
 	local function HellfuryStrikeu()
 		local abilId = GetSpellAbilityId()
-		if abilId ~= FourCC("A00I") then
+		if abilId ~= HEL_id_hfstrike then
 			return
 		end
 
@@ -17,14 +17,14 @@ do
 		local targ = GetSpellTargetUnit()
 		local x = GetUnitX(targ)
 		local y = GetUnitY(targ)
-		local alv = GetUnitAbilityLevel(u, FourCC('A00I')) - 1
+		local alv = GetUnitAbilityLevel(u, HEL_id_hfstrike) - 1
 
 		-- Hellforge mod (bool)
 		local ArmsOfAstaroth = ( GetUnitAbilityLevel(u, HellforgedSpells["ArmsOfAstaroth"]) > 0 )
 
 		-- Ability stats
-		local dmg = GetAbilityField(FourCC('A00I'), "herodur", alv)
-		local aoe = GetAbilityField(FourCC('A00I'), "area", alv)
+		local dmg = GetAbilityField(HEL_id_hfstrike, "herodur", alv)
+		local aoe = GetAbilityField(HEL_id_hfstrike, "area", alv)
 		
 		-- Sinhammer mod
         local SH_alv = GetUnitAbilityLevel(u, SHbuff_abilId)

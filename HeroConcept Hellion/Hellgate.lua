@@ -4,14 +4,14 @@ do
     ]]
     local function HellgateCast()
         local abilId = GetSpellAbilityId()
-		if abilId ~= FourCC("A00Q") then
+		if abilId ~= HEL_id_hellgate then
 			return
 		end
 
         -- Getters
         local u = GetTriggerUnit()
         local ug = CreateGroup()
-        local alv = GetUnitAbilityLevel(u, FourCC('A00Q')) - 1
+        local alv = GetUnitAbilityLevel(u, HEL_id_hellgate) - 1
         
         -- Fetch ability stats
         local dmg = GetAbilityField('A00Q', "herodur", alv)

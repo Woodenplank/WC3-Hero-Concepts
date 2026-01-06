@@ -9,18 +9,18 @@ do
 
     local function DashCast()
         local abilId = GetSpellAbilityId()
-		if abilId ~= FourCC("A004") then
+		if abilId ~= HSS_id_dash then
 			return
 		end
 
         -- Getters
         local u = GetTriggerUnit()
-        local alv = GetUnitAbilityLevel(u, FourCC('A004')) - 1
+        local alv = GetUnitAbilityLevel(u, HSS_id_dash) - 1
         
         -- Fetch ability stats
-        local dmg = GetAbilityField(FourCC('A004'), "herodur", alv)
-        local aoe = GetAbilityField(FourCC('A004'), "area", alv)
-        local range=GetAbilityField(FourCC('A004'), "range", alv)
+        local dmg = GetAbilityField(HSS_id_dash, "herodur", alv)
+        local aoe = GetAbilityField(HSS_id_dash, "area", alv)
+        local range=GetAbilityField(HSS_id_dash, "range", alv)
 
         -- Objects
         local ug = CreateGroup()

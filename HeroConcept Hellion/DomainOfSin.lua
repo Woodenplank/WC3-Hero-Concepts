@@ -11,7 +11,7 @@ do
     local function DomSinCast()
         -- Exit early if this is the wrong ability
         local abilId = GetSpellAbilityId()
-        if abilId ~= FourCC('A00N') then
+        if abilId ~= HEL_id_domsin then
             return
         end
         
@@ -19,14 +19,14 @@ do
         local u = GetTriggerUnit()
         local x = GetUnitX(u)
         local y = GetUnitY(u)
-        local alv = GetUnitAbilityLevel(u, FourCC('A00N')) - 1
+        local alv = GetUnitAbilityLevel(u, HEL_id_domsin) - 1
 
         -- Stats
-        local dmg = GetAbilityField(FourCC('A00N'), "herodur", alv)
+        local dmg = GetAbilityField(HEL_id_domsin, "herodur", alv)
         local dmg_instant=200
-        local aoe = GetAbilityField(FourCC('A00N'), "area", alv)
-        local heal= GetAbilityField(FourCC('A00N'), "range", alv)
-        local dur = GetAbilityField(FourCC('A00N'), "normaldur", alv)
+        local aoe = GetAbilityField(HEL_id_domsin, "area", alv)
+        local heal= GetAbilityField(HEL_id_domsin, "range", alv)
+        local dur = GetAbilityField(HEL_id_domsin, "normaldur", alv)
 
         -- Objects
         local ug = CreateGroup()
@@ -34,7 +34,7 @@ do
 
         -- Dummy buffer
         local dummy = CreateUnit(GetOwningPlayer(u), FourCC('e002'), x, y, 270)
-        SetUnitAbilityLevel(dummy, FourCC('S000'), alv+1)
+        SetUnitAbilityLevel(dummy, HEL_id_domsinbuff, alv+1)
 
         -- Sinhammer mod
         local SH_alv = GetUnitAbilityLevel(u, SHbuff_abilId)

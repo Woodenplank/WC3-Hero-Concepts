@@ -8,7 +8,7 @@ do
     local function NetherWeaverCast()
         -- Exit early if this is the wrong ability
         local abilId = GetSpellAbilityId()
-        if abilId ~= FourCC("A002") then
+        if abilId ~= AST_id_nether then
             return
         end
  
@@ -16,13 +16,13 @@ do
         local u = GetTriggerUnit()
         local x = GetUnitX(u)
         local y = GetUnitY(u)
-        local alv = GetUnitAbilityLevel(u, FourCC('A002')) - 1
+        local alv = GetUnitAbilityLevel(u, AST_id_nether) - 1
         local id = GetHandleId(u)
 
         -- Stats
-        local dmg = GetAbilityField(FourCC('A002'), "herodur", alv) + addSP(u, 1.8)
-        local aoe = GetAbilityField(FourCC('A002'), "area", alv)
-        local dur = GetAbilityField(FourCC('A002'), "normaldur", alv)
+        local dmg = GetAbilityField(AST_id_nether, "herodur", alv) + addSP(u, 1.8)
+        local aoe = GetAbilityField(AST_id_nether, "area", alv)
+        local dur = GetAbilityField(AST_id_nether, "normaldur", alv)
         local shieldfactor = 0.3
  
         -- Objects
@@ -38,9 +38,9 @@ do
 
         -- Dummy ability (buff)
         NetherWeaveShieldSFX[id] = AddSpecialEffectTarget("PinkMagicShield_.mdx", u, 'origin')
-        UnitAddAbility(u, FourCC('A00F'))
-        SetUnitAbilityLevel(u, FourCC('A00F'), alv+1)
-        BlzUnitHideAbility(u, FourCC('A00F'), true)
+        UnitAddAbility(u, AST_id_netherbuff)
+        SetUnitAbilityLevel(u, AST_id_netherbuff, alv+1)
+        BlzUnitHideAbility(u, AST_id_netherbuff, true)
 
         -- Arcane Almanac crit stats fetch
         local critmod = GetAlmaCritmod(u)
@@ -67,7 +67,7 @@ do
 
         -- Duration
         TimerStart(t, dur, false, function()
-            UnitRemoveAbility(u, FourCC('A00F'))
+            UnitRemoveAbility(u, AST_id_netherbuff)
             DestroyEffect(NetherWeaveShieldSFX[id])
             NetherWeaveShield[id] = 0
 
@@ -85,7 +85,7 @@ do
         local instance = CreateFromEvent()
 
         -- Early return if the unit doesn't have the shield buff (dummy ability)
-        local alv = GetUnitAbilityLevel(instance.target.unit, FourCC('A00F'))
+        local alv = GetUnitAbilityLevel(instance.target.unit, AST_id_netherbuff)
         if (alv <= 0) then
             return
         end

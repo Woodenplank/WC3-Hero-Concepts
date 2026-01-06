@@ -31,7 +31,7 @@ do
             -- nullify the damage
             BlzSetEventDamage(0)
             
-            -- Ability stats
+            -- Ability stats (early return if ability not yet learnt)
             local alv = GetUnitAbilityLevel(instance.target.unit, DP_abilId)
             if alv<1 then
                 return

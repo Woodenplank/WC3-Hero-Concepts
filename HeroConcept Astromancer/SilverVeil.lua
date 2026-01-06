@@ -6,7 +6,7 @@ do
     local function SilverVeilCast()
         -- Exit early if this is the wrong ability
         local abilId = GetSpellAbilityId()
-        if abilId ~= FourCC("A00H") then
+        if abilId ~= AST_id_silver then
             return
         end
  
@@ -15,8 +15,8 @@ do
         local alv = GetUnitAbilityLevel(u, abilId) - 1
 
         -- Stats
-        local heal = GetAbilityField(FourCC('A00H'), "herodur", alv)
-        local dur = GetAbilityField(FourCC('A00H'), "normaldur", alv)
+        local heal = GetAbilityField(AST_id_silver, "herodur", alv)
+        local dur = GetAbilityField(AST_id_silver, "normaldur", alv)
  
         -- Objects
         local t = CreateTimer()
@@ -26,9 +26,9 @@ do
 
         -- Add buff abilities
         local sfx = AddSpecialEffectTarget("Radiance Silver.mdx", u, 'chest')
-        UnitAddAbility(u, FourCC('A00G'))
-        SetUnitAbilityLevel(u, FourCC('A00G'), alv+1)
-        BlzUnitHideAbility(u, FourCC('A00G'), true)
+        UnitAddAbility(u, AST_id_silverbuff)
+        SetUnitAbilityLevel(u, AST_id_silverbuff, alv+1)
+        BlzUnitHideAbility(u, AST_id_silverbuff, true)
         UnitAddAbility(u, FourCC('A00Z'))
         SetUnitAbilityLevel(u, FourCC('A00Z'), alv+1)
         BlzUnitHideAbility(u, FourCC('A00Z'), true)
@@ -36,7 +36,7 @@ do
         -- Duration
         TimerStart(t, dur, false, function()
             DestroyEffect(sfx)
-            UnitRemoveAbility(u, FourCC('A00G'))
+            UnitRemoveAbility(u, AST_id_silverbuff)
             UnitRemoveAbility(u, FourCC('A00Z'))
             PauseTimer(t)
             DestroyTimer(t)  

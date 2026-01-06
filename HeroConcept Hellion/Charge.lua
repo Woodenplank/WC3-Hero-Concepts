@@ -5,7 +5,7 @@ do
     ]]
 
     local function ChargeCast()
-        local abilId = FourCC('A00O')
+        local abilId = HEL_id_charge
         local castId = GetSpellAbilityId()
 		if castId ~= abilId then
 			return

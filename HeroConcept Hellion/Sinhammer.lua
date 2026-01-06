@@ -19,7 +19,7 @@ Game tooltip:
     local function SinhammerCast()
         -- Exit early if this is the wrong ability
         local abilId = GetSpellAbilityId()
-        if abilId ~= FourCC("A00K") then
+        if abilId ~= HEL_id_sinham then
             return
         end
 
@@ -29,7 +29,7 @@ Game tooltip:
         --TODO: Check for Hellforge bonus
 
         -- Fetch ability stats
-        local dur = GetAbilityField(FourCC('A00K'), "normaldur", alv)
+        local dur = GetAbilityField(HEL_id_sinham, "normaldur", alv)
 
         -- Hellforge mod
         local BelialsInsights = ( GetUnitAbilityLevel(u, HellforgedSpells["BelialsInsights"]) > 0 )
@@ -42,8 +42,8 @@ Game tooltip:
             end)
             GroupEnumUnitsInRange(ug, GetUnitX(u), GetUnitY(u), 500, cond)
             local count = CountUnitsInGroup(ug)
-            UnitAddAbility(u, FourCC('A00V'))
-            SetUnitAbilityLevel(u, FourCC('A00V'), count)
+            UnitAddAbility(u, HEL_id_sinhamattributes)
+            SetUnitAbilityLevel(u, HEL_id_sinhamattributes, count)
             DestroyGroup(ug)
             DestroyCondition(cond)
         end
@@ -59,7 +59,7 @@ Game tooltip:
         -- Countdown to remove
         TimerStart(t, dur, false, function()
             UnitRemoveAbility(u, SHbuff_abilId)
-            UnitRemoveAbility(u, FourCC('A00V')) -- If Hellion doesn't have the ability, this does nothing
+            UnitRemoveAbility(u, HEL_id_sinhamattributes) -- If Hellion doesn't have the ability, this does nothing
             PauseTimer(t)
             DestroyTimer(t)
         end)
