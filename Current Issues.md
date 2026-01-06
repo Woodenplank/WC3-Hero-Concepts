@@ -10,4 +10,11 @@ Short of rewriting a whole damage detection system in lua myself that is --- But
  Otherwise...
  * (Hellion) Emberstorm will spawn fiery tornadoes even without activating the associated Hellforge upgrade.
  * (Sword-Saint) Passion/Dispassion of a Saint doesn't always properly swap upon activation.
- * (Astromancer) Silver Veil (dummy) buff ability icon is not properly hidden.
+ * (Astromancer) Arcane Almanac (dummy) buff ability icon is not properly hidden.
+
+## Future plans:
+* Centralize all object editor data in a single document, and define the IDs there.
+Whenever reference must be made, use the variable rather than a literal reference.
+Should make it easier to root out copy'ing mistakes and (potentially) export to other maps
+* As long as its included in the map code prior to any of the triggers or "helper" functions that rely on it, should be fine.
+Be careful with global functions like SHhammermod for Hellion. It's not a trigger, therefore not created "at map initialization" but it still relies on defined object variables.
