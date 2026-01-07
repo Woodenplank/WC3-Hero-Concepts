@@ -85,8 +85,15 @@ HellforgedResearches = {
     ["CrownOfTheNineKingdoms"] = FourCC('A00U')
 }
 
-Hellforge = FourCC('h005') -- not actually needed. Kept here for bookkeeping though
+Hellforge_utype = FourCC('h005')
 Hellforge_QEnabler=FourCC('h008')
 Hellforge_WEnabler=FourCC('h007')
 Hellforge_EEnabler=FourCC('h006')
 Hellforge_REnabler=FourCC('h009')
+
+Hellforge_blockerstacks = {
+    ["ArmsOfAstaroth"] = Hellforge_QEnabler,
+    ["BelialsInsights"] = Hellforge_WEnabler,
+    ["SevenTonguesOfPytho"] = Hellforge_EEnabler,
+    ["CrownOfTheNineKingdoms"] = Hellforge_REnabler
+}

@@ -3,17 +3,13 @@ do
     -- Technically, this could point to a nil unit group if called within 0.01 seconds of elapsed game time
     -- TOO BAD!
 
-    --[[ Note on IsUnitIdType
-        It fucking sucks
-    ]]
-
     local function Hellforge_CastAbility()
         -- Fetch Hellforge properties
         local Hf = GetTriggerUnit()
         local owner = GetOwningPlayer(Hf)
 
         -- Exit early if not Hellforge
-        if ( GetUnitTypeId(Hf) ~= FourCC('h005') ) then
+        if UnitTypeCheck(Hf, Hellforge_utype) then
             return
         end
 
@@ -33,50 +29,25 @@ do
         end)
 
         -- Remove all current Hellforged abilities
-        UnitRemoveAbility(Hellion, HellforgedSpells["ArmsOfAstaroth"])
-        UnitRemoveAbility(Hellion, HellforgedSpells["BelialsInsights"])
-        UnitRemoveAbility(Hellion, HellforgedSpells["SevenTonguesOfPytho"])
-        --UnitRemoveAbility(Hellion, HellforgedSpells["CrownOfTheNineKingdoms"])
+        for k,v in ipairs(HellforgedSpells) do
+            UnitRemoveAbility(Hellion, v)
+        end
 
-        -- Setup for newly activated researched
-        -- TODO This should probably be looping through a table... Somehow.
+        --[[ Adds appropiate new ability to the Hellion and reestablish other research units
+        -- it is critical that the researches, spells, and blocker-unit-type tables all use the same keys!
+        -- See ObjectConstants.lua
+        ]]
         local abilId = GetSpellAbilityId()
-        if abilId == HellforgedResearches["ArmsOfAstaroth"] then
-            UnitAddAbility(Hellion, HellforgedSpells["ArmsOfAstaroth"])
-            -- Reestablish other research units
-            local temp = CreateUnit(owner, HellforgeEnabler_Wtype, 0, 0, 270)
-            GroupAddUnit(HellforgeResearchBlockers, temp)
-            temp = CreateUnit(owner, HellforgeEnabler_Etype, 0, 0, 270)
-            GroupAddUnit(HellforgeResearchBlockers, temp)
-            temp = CreateUnit(owner, HellforgeEnabler_Rtype, 0, 0, 270)
-            GroupAddUnit(HellforgeResearchBlockers, temp)
-        elseif abilId == HellforgedResearches["BelialsInsights"] then
-            UnitAddAbility(Hellion, HellforgedSpells["BelialsInsights"])
-            -- Reestablish other research units
-            local temp = CreateUnit(owner, HellforgeEnabler_Qtype, 0, 0, 270)
-            GroupAddUnit(HellforgeResearchBlockers, temp)
-            temp = CreateUnit(owner, HellforgeEnabler_Etype, 0, 0, 270)
-            GroupAddUnit(HellforgeResearchBlockers, temp)
-            temp = CreateUnit(owner, HellforgeEnabler_Rtype, 0, 0, 270)
-            GroupAddUnit(HellforgeResearchBlockers, temp)
-        elseif abilId == HellforgedResearches["SevenTonguesOfPytho"] then
-            UnitAddAbility(Hellion, HellforgedSpells["SevenTonguesOfPytho"])
-            -- Reestablish other research units
-            local temp = CreateUnit(owner, HellforgeEnabler_Qtype, 0, 0, 270)
-            GroupAddUnit(HellforgeResearchBlockers, temp)
-            temp = CreateUnit(owner, HellforgeEnabler_Wtype, 0, 0, 270)
-            GroupAddUnit(HellforgeResearchBlockers, temp)
-            temp = CreateUnit(owner, HellforgeEnabler_Rtype, 0, 0, 270)
-            GroupAddUnit(HellforgeResearchBlockers, temp)
-        elseif abilId == HellforgedResearches["CrownOfTheNineKingdoms"] then
-            UnitAddAbility(Hellion, HellforgedSpells["CrownOfTheNineKingdoms"])
-            -- Reestablish other research units
-            local temp = CreateUnit(owner, HellforgeEnabler_Qtype, 0, 0, 270)
-            GroupAddUnit(HellforgeResearchBlockers, temp)
-            temp = CreateUnit(owner, HellforgeEnabler_Wtype, 0, 0, 270)
-            GroupAddUnit(HellforgeResearchBlockers, temp)
-            temp = CreateUnit(owner, HellforgeEnabler_Etype, 0, 0, 270)
-            GroupAddUnit(HellforgeResearchBlockers, temp)
+        for key,val in HellforgedResearches do
+            if abilId == val then
+                UnitAddAbility(Hellion, HellforgedSpells[key])
+                for idx,utype in ipairs(Hellforge_blockerstacks) do
+                    if utype ~= Hellforge_blockerstacks[key] then
+                        local temp = CreateUnit(owner, utype, 0, 0, 270)
+                        GroupAddUnit(HellforgeResearchBlockers, temp)
+                    end
+                end
+            end
         end
 
         -- Clean memory
