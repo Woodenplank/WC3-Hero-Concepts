@@ -17,7 +17,7 @@ do
                     if remain == 0 then
                         DestroyEffect(effect[Damage.target.id])
                         effect[Damage.target.id] = nil
-                        UnitRemoveAbility(Damage.target.unit, FourCC('A00F'))
+                        UnitRemoveAbility(Damage.target.unit, AST_id_netherbuff)
                     end
 
                     -- ClearTextMessages()
@@ -27,23 +27,23 @@ do
                     BlzSetEventDamage(-remain)
                     DestroyEffect(effect[Damage.target.id])
                     effect[Damage.target.id] = nil
-                    UnitRemoveAbility(Damage.target.unit, FourCC('A00F'))
+                    UnitRemoveAbility(Damage.target.unit, AST_id_netherbuff)
                 end
             end
         end)
         
-        RegisterSpellEffectEvent(FourCC('A002'), function()
+        RegisterSpellEffectEvent(AST_id_nether, function()
             -- Getters
             local u = Spell.source.unit
             local x = GetUnitX(u)
             local y = GetUnitY(u)
-            local alv = GetUnitAbilityLevel(u, FourCC('A002')) - 1
+            local alv = GetUnitAbilityLevel(u, AST_id_nether) - 1
             local id = Spell.source.id
 
             -- Stats
-            local dmg = GetAbilityField(FourCC('A002'), "herodur", alv) + addSP(u, 1.8)
-            local aoe = GetAbilityField(FourCC('A002'), "area", alv)
-            local dur = GetAbilityField(FourCC('A002'), "normaldur", alv)
+            local dmg = GetAbilityField(AST_id_nether, "herodur", alv) + addSP(u, 1.8)
+            local aoe = GetAbilityField(AST_id_nether, "area", alv)
+            local dur = GetAbilityField(AST_id_nether, "normaldur", alv)
             local shieldfactor = 0.3
 
             -- Objects
@@ -58,9 +58,9 @@ do
             end)
 
             -- Dummy ability (buff)
-            UnitAddAbility(u, FourCC('A00F'))
-            SetUnitAbilityLevel(u, FourCC('A00F'), alv+1)
-            BlzUnitHideAbility(u, FourCC('A00F'), true)
+            UnitAddAbility(u, AST_id_netherbuff)
+            SetUnitAbilityLevel(u, AST_id_netherbuff, alv+1)
+            BlzUnitHideAbility(u, AST_id_netherbuff, true)
 
             -- Arcane Almanac crit stats fetch
             local critmod = GetAlmaCritmod(u)
@@ -89,7 +89,7 @@ do
 
             -- Duration
             TimerStart(t, dur, false, function()
-                UnitRemoveAbility(u, FourCC('A00F'))
+                UnitRemoveAbility(u, AST_id_netherbuff)
                 DestroyEffect(effect[id])
                 shield[id] = 0
 

@@ -14,18 +14,18 @@ do
     local function GuardCast()
         --This particular trigger just handles the cast and expiration effects.
         local abilId = GetSpellAbilityId()
-		if abilId ~= FourCC("A001") then
+		if abilId ~= HSS_id_guard then
 			return
 		end
 
         -- Getters
         local u = GetTriggerUnit()
-        local alv = GetUnitAbilityLevel(u, FourCC('A001')) - 1
+        local alv = GetUnitAbilityLevel(u, HSS_id_guard) - 1
         local id = GetHandleId(u)
 
         -- Fetch ability stats
-        local deflectchance = GetAbilityField(FourCC('A001'), "aoe", alv)
-        local dur=GetAbilityField(FourCC('A001'), "herodur", alv)
+        local deflectchance = GetAbilityField(HSS_id_guard, "aoe", alv)
+        local dur=GetAbilityField(HSS_id_guard, "herodur", alv)
 
         -- Dummy (buff) ability
         FastAbilityAdd(u, 'S002', alv+1, true)
@@ -86,7 +86,7 @@ do
         if (alv <= 0) then
             return
         end
-        local deflectchance = GetAbilityField(FourCC('A001'), "aoe", alv-1)
+        local deflectchance = GetAbilityField(HSS_id_guard, "aoe", alv-1)
         if (math.random() <= deflectchance) then
             if (udg_IsDamageMelee) then
                 local dmg = udg_DamageEventPrevAmount * 0.5
