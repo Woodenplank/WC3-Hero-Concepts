@@ -25,6 +25,13 @@ function UnitTypeCheck(which_unit, which_type)
     return false
 end
 
+---@param which_unit unit
+---@return integer
+function GetUnitAvgAttackDamage(which_unit)
+    -- does not account for item bonuses (yet...)
+    return math.tointeger(BlzGetUnitBaseDamage(which_unit) + (BlzGetUnitDiceNumber(which_unit)*BlzGetUnitDiceSides(which_unit))/2)
+end
+
 
 ---@param num number
 ---@return string
