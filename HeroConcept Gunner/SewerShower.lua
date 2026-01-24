@@ -74,7 +74,7 @@ do
                         end
                     end)
                     
-                    AfterSlime(missile.x, missle.y, u, dur, alv+1)
+                    AfterSlime(missile.x, missile.y, u, dur, alv+1)
                     DestroyGroup(ug)
 
                     return true
