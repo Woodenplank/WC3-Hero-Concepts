@@ -19,12 +19,12 @@ do
 
         -- Missile
         local missile = Missiles:create(init_x, init_y, 40, targ_x, targ_y, 0)
-        missile:model("Abilities\\Weapons\\Mortar\\MortarMissile.mdl")
+        missile:model("Missile.mdx")
         missile:speed(700)
         missile.source = u
         missile.owner = GetOwningPlayer(u)
         missile:arc(30)
-        missile:scale(1.5)
+        missile:scale(0.9)
         missile:vision(350)
         missile.damage=dmg
 

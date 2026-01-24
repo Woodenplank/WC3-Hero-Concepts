@@ -35,7 +35,7 @@ do
         
         bolt.onFinish = function()
             UnitDamageTarget(bolt.source, bolt.target, bolt.damage, true, false, ATTACK_TYPE_NORMAL, DAMAGE_TYPE_NORMAL, nil)
-            --DestroyEffect(AddSpecialEffect(".mdl", bolt.x, bolt.y))
+            DestroyEffect(AddSpecialEffect("Abilities\\Spells\\Orc\\Purge\\PurgeBuffTarget.mdl", bolt.x, bolt.y))
             if false then 
                 return true
             end
