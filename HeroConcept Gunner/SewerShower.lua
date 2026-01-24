@@ -48,7 +48,7 @@ do
 
         -- Missile constants
         local speed=550
-        local sfx = "WidowPoison.mdx"
+        local sfx = "Chain Grenade Green.mdx"
         local sfx_finish=nil
         local colisn = 125
 
