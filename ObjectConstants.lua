@@ -10,6 +10,8 @@
 utype_SwordSaint = FourCC('H000')
 utype_Hellion = FourCC('O001')
 utype_Astromancer = FourCC('H003')
+utype_Huntress = FourCC('H001')     -- working title
+utype_Gunner = FourCC('H004')       -- working title
 
 --Heroic Summons
 utype_Celestial = FourCC('e003')
@@ -49,6 +51,17 @@ AST_id_netherbuff=FourCC('A00F')
 AST_id_silver=FourCC("A00H")
 AST_id_silverbuff=FourCC('A00G')
 
+-- Ratling Gunner
+RAT_id_spool=FourCC('A012')
+RAT_id_spray=FourCC('A013')
+RAT_id_blast=FourCC('A014')
+RAT_id_blastArmorDebuff=FourCC('A016')
+RAT_id_makeway = FourCC('A015')
+RAT_id_sewageaura = FourCC('A017')
+RAT_id_sewage = FourCC('A018')
+RAT_id_capacitor = FourCC('A019')
+RAT_id_sewerbrew = FourCC('A01A')
+
 -- Hellion object data
 HEL_id_hfstrike=FourCC("A00I")
 HEL_id_charge=FourCC('A00O')
@@ -57,15 +70,11 @@ HEL_id_domsinbuff=FourCC('S000')
 HEL_id_emberstorm=FourCC("A00M")
 HEL_id_hellgate=FourCC("A00Q")
 HEL_id_flametongues=FourCC('A00P')
---[[ Remove obsolete Hellion globals
-    SHbuff_abilId = FourCC('A00L')
-    ]]
 HEL_id_sinham=FourCC("A00K")
 HEL_id_sinhambuff=FourCC('A00L')
 HEL_id_sinhamattributes=FourCC('A00V')
 
 
---[[ Remove obsolete Hellion globals ]]
 -- Hellion Hellforge settings
     -- Redundancy in table entries; in case someone forgets whether to use upg name or ability name
 HellforgedSpells = {
@@ -96,4 +105,16 @@ Hellforge_blockerstacks = {
     ["BelialsInsights"] = Hellforge_WEnabler,
     ["SevenTonguesOfPytho"] = Hellforge_EEnabler,
     ["CrownOfTheNineKingdoms"] = Hellforge_REnabler
+}
+
+
+PoisonDebuffsList={
+    FourCC('Bssi'), --Slow Poison (info)
+    FourCC('Bspo'), --Slow Poison (non-stacking)
+    FourCC('Bssd'), --Slow Poison (stacking)
+    FourCC('Bpsi'), --Poison (info)
+    FourCC('Bpoi'), --Poison (non-stacking)
+    FourCC('Bpsd'), --Poison (stacking)
+    FourCC('Bapl') --Disease (from Cloud)
+    ----unfinished!
 }
