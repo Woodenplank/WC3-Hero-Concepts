@@ -18,7 +18,7 @@ do
         local alv = GetUnitAbilityLevel(caster, RAT_id_capacitor) - 1
         local dmg = GetAbilityField(RAT_id_capacitor, "herodur", alv) + addSP(caster, 1.2)
         local aoe = GetAbilityField(RAT_id_capacitor, "aoe", alv)
-        local count=math.tointeger(GetAbilityField(RAT_id_capacitor, "normaldur", alv))
+        local count=math.floor(GetAbilityField(RAT_id_capacitor, "normaldur", alv))
         local dropp = 1 - 0.3
 
         -- Main coordinates
