@@ -63,7 +63,7 @@ do
             -- Star sprites
             --[[ Avoid floating point errors by some modulo arithmetic on ticks ]]
             tick = tick + 1
-            if (tick%%4 == 0) then -- every 4th tick
+            if (math.fmod(tick,4) == 0) then -- every 4th tick
                 local new_x = x + (aoe/2) * (math.random()+math.random(-1,1))
 		        local new_y = y + (aoe/2) * (math.random()+math.random(-1,1))
                 local sprite = CreateUnit(GetOwningPlayer(u), FourCC('o000'), new_x, new_y, 0)
