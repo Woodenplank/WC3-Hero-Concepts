@@ -1,6 +1,7 @@
 do
+    -- DO NOT IMPLEMENT; currently experimenting with OOP in lua and metatables.
+    -- this will probably crash your map if imported
     ____id_frozenorb = FourCC('____')
-    local Orb = Orb or require("Orb.lua")
 
     local function FrozenOrbCast()
         -- exit early if wrong ability
@@ -24,7 +25,7 @@ do
         local ang = AngleBetweenCoords(init_x, end_x, init_y, end_y)
 
         -- Orb
-        local orb = Orb:create(
+        local orb = Orb:create({
             origin = {init_x, init_y, 100},
             destination = {end_x, end_y, 100},
             coords = {init_x, init_y, 100},
@@ -33,7 +34,7 @@ do
             model = "Abilities\\Spells\\Orc\\LightningBolt\\LightningBoltMissile.mdl",
             lightning = "CHIM",
             speed = 10
-        )
+        })
         BlzSetSpecialEffectScale(orb.handle, 2.0)
 
         local t = CreateTimer()
@@ -55,12 +56,11 @@ do
                 PauseTimer(t)
                 DestroyTimer(t)
                 orb:destroy()
-                -- explosive ending???
-                --DestroyEffect(AddSpecialEffect(..., x, y))
             end
         end)
         -- END --
     end
+
 
     ------ Create trigger ------
     local function CreateCastTrigger()
