@@ -1,10 +1,6 @@
 do
     ____id_frozenorb = FourCC('____')
 
-    --todo: there should be a way to only use a single running timer here
-    -- e.g. we count every 0.05 interval; only do damage every 0.7/0.05 = 14th interval
-    -- assuming modolu arithmetic is faster (in lua) than having two WC3 timers running concurrently... ???
-
     local function FrozenOrbCast()
         -- exit early if wrong ability
         local abilId = GetSpellAbilityId()
@@ -37,40 +33,41 @@ do
         -- Objects
         local ug = CreateGroup()
         local cond = Condition(function() return 
-			IsUnitEnemy(GetFilterUnit(),GetOwningPlayer(caster)) and not IsUnitType(GetFilterUnit(), UNIT_TYPE_DEAD) and not IsUnitType(GetFilterUnit(), UNIT_TYPE_STRUCTURE) and not BlzIsUnitInvulnerable(GetFilterUnit())
+			IsUnitEnemy(GetFilterUnit(),GetOwningPlayer(caster)) 
+            and not IsUnitType(GetFilterUnit(), UNIT_TYPE_DEAD) 
+            and not IsUnitType(GetFilterUnit(), UNIT_TYPE_STRUCTURE) 
+            and not BlzIsUnitInvulnerable(GetFilterUnit())
 		end)
-        
-
-        -- damage DOES NOT happen every 0.05 seconds
-        local t_dmg = CreateTimer()
-        local t_dmginterval=0.7
-        TimerStart(t_dmg, t_dmginterval, true, function()
-            -- area damage
-            GroupEnumUnitsInRange(ug, orb_x, orb_y, aoe, cond)
-            print(tostring(CountUnitsInGroup(ug)))
-            ForGroup(ug, function()
-				pu = GetEnumUnit()
-                UnitDamageTarget(caster, pu, dmg, true, false, ATTACK_TYPE_NORMAL, DAMAGE_TYPE_NORMAL, nil)
-				
-                local pu_x, pu_y = GetUnitX(pu), GetUnitY(pu)
-                local chain = AddLightningEx(orb_lightning, false, orb_x, orb_y, 100, pu_x, pu_y, 50)
-                local t_lightning = CreateTimer()
-                TimerStart(t_lightning, 0.5, false, function()
-                    DestroyLightning(chain)
-                    PauseTimer(t_lightning)
-                    DestroyTimer(t_lightning)
-                end)
-			end)
-        end)
 
         local t = CreateTimer()
         local t_interval=0.05
         local stepsize=10
+        local count = 0
         TimerStart(t, t_interval, true, function()
             -- Roll the ball
             orb_x, orb_y = PolarStep(orb_x, orb_y, stepsize, ang)
             BlzSetSpecialEffectX(orb, orb_x)
             BlzSetSpecialEffectY(orb, orb_y)
+
+            -- we count every 0.05 seconds; only do damage every 0.7/0.05 = 14th interval
+            count = count + 1
+            if (count==14) then
+                GroupEnumUnitsInRange(ug, orb_x, orb_y, aoe, cond)
+                ForGroup(ug, function()
+                    pu = GetEnumUnit()
+                    UnitDamageTarget(caster, pu, dmg, true, false, ATTACK_TYPE_NORMAL, DAMAGE_TYPE_NORMAL, nil)
+                    
+                    local pu_x, pu_y = GetUnitX(pu), GetUnitY(pu)
+                    local chain = AddLightningEx(orb_lightning, false, orb_x, orb_y, 100, pu_x, pu_y, 50)
+                    local t_lightning = CreateTimer()
+                    TimerStart(t_lightning, 0.5, false, function()
+                        DestroyLightning(chain)
+                        PauseTimer(t_lightning)
+                        DestroyTimer(t_lightning)
+                    end)
+                end)
+                count = 0
+            end
 
             --attempt to end and clean up
             dist = dist - stepsize
