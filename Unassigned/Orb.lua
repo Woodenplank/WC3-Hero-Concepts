@@ -1,4 +1,3 @@
-
 do
     --Orb = setmetatable({},{})     -- empty table [1] with a metatable setting (also empty table, [2])
     --meta = getmetatable(Orb)      -- fetches the previously assigned metatable
@@ -8,26 +7,27 @@ do
     setmetatable(Orb,meta)
 
     meta.__index = meta             -- redo access by [index] to the metatable
-    -- local allowed_fields = {
-    --     origin = true,
-    --     destination = true,
-    --     coords = true,
-    --     area = true,
-    --     damage = true,
-    --     model = true,
-    --     scale = true,
-    --     speed = true,
-    --     handle = true,
-    -- }
-    -- function Orb.__newindex(t, k, v)
-    --     if not allowed_fields[k] then
-    --         print("attempt to set unknown field '"..tostring(k).."'")
-    --     end
-    --     rawset(t, k, v)
-    -- end
+
+    -- Spelling-error protection when initiating new instances
+    local allowed_fields = {
+        origin = true,
+        destination = true,
+        coords = true,
+        area = true,
+        model = true,
+        scale = true,
+        speed = true,
+        handle = true,
+    }
+    function Orb.__newindex(t, k, v)
+        if not allowed_fields[k] then
+            print("attempt to set unknown field '"..tostring(k).."'")
+        end
+        rawset(t, k, v)
+    end
 
     ---------------------------------- movement methods ----------------------------------
-    ---@param newcoords table_of_numbers
+
     ---@return nil
     function meta:update()
         if self.handle and self.coords then
@@ -49,42 +49,54 @@ do
         local nx, ny = PolarStep(self.coords.x, self.coords.y, self.speed, ang)
         self.coords = {x = nx, y = ny, z=self.coords.z}
         self:update()
-
         return dist <= self.speed
     end
     
     ---------------------------------- collision ----------------------------------
 
-    ---@param friendfoe string
     ---@param size number
+    ---@param source_u unit
     ---@return boolean
-    function meta:collision(friendfoe, size, source_p)
-        if (friendfoe.type()~="string") or (size.type()~="number") or (size<=0) then
-            return false
-        end
-
+    function meta:collision_enemy(size, source_u)
+        -- checks whether the orb has collided with a unit
+        local op = GetOwningPlayer(source_u)
         local ug = CreateGroup()
-        local cond
-        if friendfoe == "friend" or friendfoe=="ally" or friendfoe=="friendly" then
-            cond = Condition(function()
-                local fu = GetFilterUnit()
-                return not IsUnitEnemy(fu, source_p)
-                    and not IsUnitType(fu, UNIT_TYPE_DEAD)
-                    and not IsUnitType(fu, UNIT_TYPE_STRUCTURE)
-            end)
-        end
-        if friendfoe == "foe" or friendfoe =="enemy" or friendfoe=="hostile" then
-            cond = Condition(function()
-                local fu = GetFilterUnit()
-                return IsUnitEnemy(fu, source_p)
-                    and not IsUnitType(fu, UNIT_TYPE_DEAD)
-                    and not IsUnitType(fu, UNIT_TYPE_STRUCTURE)
-                    and not BlzIsUnitInvulnerable(fu)
-            end)
-        end
-        GroupEnumUnitsInRange(ug, self.coords.x, self.coords.y, size, cond)
-        return (CountUnitsInGroup(ug) > 0)
+        local cond = Condition(function()
+            local fu = GetFilterUnit()
+            return not IsUnitEnemy(fu, op) 
+                and not IsUnitType(fu, UNIT_TYPE_DEAD)
+                and not IsUnitType(fu, UNIT_TYPE_STRUCTURE)
+        end)
+        GroupEnumUnitsInRange(ug, self.coords.x, self.coords.y, self.area, cond)
+        local did_collide = (CountUnitsInGroup(ug) > 0)
+        DestroyGroup(ug)
+        DestroyCondition(cond)
+
+        return did_collide
     end
+
+    ---@param size number
+    ---@param source_u unit
+    ---@return boolean
+    function meta:collision_friend(size, source_u)
+        -- checks whether the orb has collided with a unit
+        local op = GetOwningPlayer(source_u)
+        local ug = CreateGroup()
+        local cond = Condition(function()
+            local fu = GetFilterUnit()
+            return IsUnitEnemy(fu, op)
+                and not IsUnitType(fu, UNIT_TYPE_DEAD)
+                and not IsUnitType(fu, UNIT_TYPE_STRUCTURE)
+        end)
+        GroupEnumUnitsInRange(ug, self.coords.x, self.coords.y, self.area, cond)
+        local did_collide = (CountUnitsInGroup(ug) > 0)
+        DestroyGroup(ug)
+        DestroyCondition(cond)
+
+        return did_collide
+    end
+
+    
 
 
 
@@ -118,7 +130,6 @@ do
             this.destination.z = params.destination.z or params.z2 or 0
         end
         this.area = params.area or 0
-        this.damage = params.damage or 0
         this.model = params.model or ""
         this.scale = params.scale or 1.0
         this.speed = params.speed or 10
