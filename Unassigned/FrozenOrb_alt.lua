@@ -1,54 +1,79 @@
-do
-    -- DO NOT IMPLEMENT; currently experimenting with OOP in lua and metatables.
-    -- this will probably crash your map if imported
-    ____id_frozenorb = FourCC('____')
+-- This spell is called Frozen Orb in some references due to being inspired by the eponymous Mage's spell from World of Warcraft; Mists of Pandaria
+-- In spite of this, it very much uses lightning effects and shit.
 
-    local function FrozenOrbCast()
+do
+    ____id_orblightning = FourCC('A01B')
+
+    local function OrbLightningCast()
         -- exit early if wrong ability
         local abilId = GetSpellAbilityId()
-		if abilId ~= ____id_frozenorb then
+		if abilId ~= ____id_orblightning then
 			return
 		end
 
         -- Getters
         local caster= GetTriggerUnit()
-        local alv = GetUnitAbilityLevel(caster, ____id_frozenorb) - 1
-        --local dur = GetAbilityField(____id_frozenorb, "normaldur", alv)
-        local dmg = GetAbilityField(____id_frozenorb, "herodur", alv) + addSP(caster, 1.2)
-        local aoe = GetAbilityField(____id_frozenorb, "aoe", alv)
-        local dist= GetAbilityField(____id_frozenorb, "range", alv)
+        local alv = GetUnitAbilityLevel(caster, ____id_orblightning) - 1
+        local dmg = GetAbilityField(____id_orblightning, "herodur", alv) + addSP(caster, 1.2)
+        local aoe = GetAbilityField(____id_orblightning, "aoe", alv)
+        local dist= GetAbilityField(____id_orblightning, "range", alv) + 300
 
-        -- Main coordinates
+        -- Destination = __MAX__ distance __TOWARDS__ target point
         local init_x, init_y = GetUnitX(caster), GetUnitY(caster)
-        local orb_x, orb_y = init_x, init_y
-        local end_x, end_y = GetSpellTargetX(), GetSpellTargetY()
-        local ang = AngleBetweenCoords(init_x, end_x, init_y, end_y)
+        local end_x, end_y = PolarStep(init_x, init_y, dist, AngleBetweenCoords(init_x, GetSpellTargetX(), init_y, GetSpellTargetY()) )
 
-        -- Orb
+        -- Orb object
         local orb = Orb:create({
-            origin = {init_x, init_y, 100},
-            destination = {end_x, end_y, 100},
-            coords = {init_x, init_y, 100},
-            damage = dmg,
+            origin = {x = init_x, y = init_y, z=100},
+            destination = {x = end_x, y = end_y, z=100},
             area = aoe,
+            damage = dmg,
             model = "Abilities\\Spells\\Orc\\LightningBolt\\LightningBoltMissile.mdl",
-            lightning = "CHIM",
+            scale = 2.0,
             speed = 10
         })
-        BlzSetSpecialEffectScale(orb.handle, 2.0)
 
+        -- Add aoe-lightning-attack functionality
+        function orb:zap_area(source)
+            -- Setup target filter
+            local source_p = GetOwningPlayer(source)
+            local ug = CreateGroup()
+            local cond = Condition(function()
+                local fu = GetFilterUnit()
+                return IsUnitEnemy(fu, source_p) and not IsUnitType(fu, UNIT_TYPE_DEAD) and not IsUnitType(fu, UNIT_TYPE_STRUCTURE) and not BlzIsUnitInvulnerable(fu)
+            end)
+            -- loop through unit group
+            GroupEnumUnitsInRange(ug, self.coords.x, self.coords.y, self.area, cond)
+            ForGroup(ug, function()
+                local pu = GetEnumUnit()
+                UnitDamageTarget(source, pu, self.damage, true, false, ATTACK_TYPE_NORMAL, DAMAGE_TYPE_NORMAL, nil)
+
+                local pu_x, pu_y = GetUnitX(pu), GetUnitY(pu)
+                local chain = AddLightningEx("CHIM", false, self.coords.x, self.coords.y, self.coords.z, pu_x, pu_y, 50)
+                DestroyEffect(AddSpecialEffect("Abilities\\Weapons\\FarseerMissile\\FarseerMissile.mdl", pu_x, pu_y))
+                local t_lightning = CreateTimer()
+                TimerStart(t_lightning, 0.33, false, function()
+                    DestroyLightning(chain)
+                    PauseTimer(t_lightning)
+                    DestroyTimer(t_lightning)
+                end)
+            end)
+            ---- cleanup ----
+            DestroyGroup(ug)
+            DestroyCondition(cond)
+        end
+
+        -- Run the orb
         local t = CreateTimer()
         local t_interval=0.05
-        count = 0
+        local count = 0
         TimerStart(t, t_interval, true, function()
-            -- Roll the ball
-            nx,ny = PolarStep(orb.coords.x, orb.coords.y, orb.speed, ang)
-            orb.update({nx,ny,orb.z})
-
+            orb:step()
             -- we count every 0.05 seconds; only do damage every 0.7/0.05 = 14th interval
             count = count + 1
-            if math.fmod(count,14) then
+            if count==14 then
                 orb:zap_area(caster)
+                count = 0
             end
             --attempt to end and clean up
             dist = dist - orb.speed
@@ -66,7 +91,7 @@ do
     local function CreateCastTrigger()
         local trg = CreateTrigger()
         TriggerRegisterAnyUnitEventBJ(trg, EVENT_PLAYER_UNIT_SPELL_EFFECT)
-        TriggerAddAction(trg, FrozenOrbCast)
+        TriggerAddAction(trg, OrbLightningCast)
     end
 
     OnInit.trig(CreateCastTrigger)
