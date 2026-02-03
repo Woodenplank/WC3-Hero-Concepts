@@ -7,13 +7,14 @@ do
     setmetatable(Orb,meta)
 
     meta.__index = meta             -- redo access by [index] to the metatable
-
+    
     -- Spelling-error protection when initiating new instances
     local allowed_fields = {
         origin = true,
         destination = true,
         coords = true,
         area = true,
+        source = true,
         model = true,
         scale = true,
         speed = true,
@@ -54,16 +55,13 @@ do
     
     ---------------------------------- collision ----------------------------------
 
-    ---@param size number
-    ---@param source_u unit
     ---@return boolean
-    function meta:collision_enemy(size, source_u)
+    function meta:collision_enemy()
         -- checks whether the orb has collided with a unit
-        local op = GetOwningPlayer(source_u)
         local ug = CreateGroup()
         local cond = Condition(function()
             local fu = GetFilterUnit()
-            return not IsUnitEnemy(fu, op) 
+            return not IsUnitEnemy(fu, self.owner) 
                 and not IsUnitType(fu, UNIT_TYPE_DEAD)
                 and not IsUnitType(fu, UNIT_TYPE_STRUCTURE)
         end)
@@ -75,16 +73,13 @@ do
         return did_collide
     end
 
-    ---@param size number
-    ---@param source_u unit
     ---@return boolean
-    function meta:collision_friend(size, source_u)
+    function meta:collision_friend()
         -- checks whether the orb has collided with a unit
-        local op = GetOwningPlayer(source_u)
         local ug = CreateGroup()
         local cond = Condition(function()
             local fu = GetFilterUnit()
-            return IsUnitEnemy(fu, op)
+            return IsUnitEnemy(fu, self.owner)
                 and not IsUnitType(fu, UNIT_TYPE_DEAD)
                 and not IsUnitType(fu, UNIT_TYPE_STRUCTURE)
         end)
@@ -96,8 +91,35 @@ do
         return did_collide
     end
 
-    
+    ---@return boolean
+    function meta:collision_nowalk()
+        -- This doesn't respect the collision size of the projectile
+        -- but this is much faster than checking if the collision circle
+        -- overlaps ANY unwalkable pathing cell
+        return (not IsTerrainPathable(self.coords.x, self.coords.y, PATHING_TYPE_WALKABILITY) )
+    end
 
+
+    local destructables_rect=Rect(0., 0., 0., 0.)
+     --[[ WARNING
+        EnumDestructablesInRect() also catches hidden destructables.
+        There is no native way to detect if a destructable is set to hidden.
+        
+        TODO:
+        • any game action which hides destructables should also set a custom flag
+        • this function should be updated to check that flag
+    ]]
+    ---@return boolean
+    function meta:collision_destructable()
+        SetRect(destructables_rect, self.coords.x-self.area, self.coords.y-self.area, self.coords.x+self.area, self.coords.y+self.area)
+        EnumDestructablesInRect(destructables_rect, nil, function()
+            local des = GetEnumDestructable()
+            if des~=nil then
+                return true
+            end
+        )
+        return false
+    end
 
 
     ---------------------------------- creator and destructor methods ----------------------------------
@@ -128,6 +150,12 @@ do
             this.destination.x = params.destination.x or params.x2 or 0
             this.destination.y = params.destination.y or params.y2 or 0
             this.destination.z = params.destination.z or params.z2 or 0
+        end
+        this.source = params.source or nil
+        if this.source ~= nil then
+            this.owner = GetOwningPlayer(this.source)
+        else
+            this.owner = nil
         end
         this.area = params.area or 0
         this.model = params.model or ""
