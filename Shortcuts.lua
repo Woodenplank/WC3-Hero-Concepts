@@ -1,3 +1,5 @@
+-------------------------------------- unit attributes --------------------------------------
+
 ---@param which_unit unit
 ---@param which_ability integer | FourCC string
 ---@param which_level integer
@@ -32,6 +34,30 @@ function GetUnitAvgAttackDamage(which_unit)
     return math.tointeger(BlzGetUnitBaseDamage(which_unit) + (BlzGetUnitDiceNumber(which_unit)*BlzGetUnitDiceSides(which_unit))/2)
 end
 
+-------------------------------------- map --------------------------------------
+
+---@param x number
+---@param y number
+---@return boolean
+function IsTerrainWalkable(x, y)
+    --[[ from common.1.33.v2.lua : 
+        PATHING_TYPE_ANY = ConvertPathingType(0)	        ---@type pathingtype
+        PATHING_TYPE_WALKABILITY = ConvertPathingType(1)	---@type pathingtype
+        PATHING_TYPE_FLYABILITY = ConvertPathingType(2)	    ---@type pathingtype
+        PATHING_TYPE_BUILDABILITY = ConvertPathingType(3)	---@type pathingtype
+        PATHING_TYPE_PEONHARVESTPATHING = ConvertPathingType(4)	---@type pathingtype
+        PATHING_TYPE_BLIGHTPATHING = ConvertPathingType(5)	---@type pathingtype
+        PATHING_TYPE_FLOATABILITY = ConvertPathingType(6)	---@type pathingtype
+        PATHING_TYPE_AMPHIBIOUSPATHING = ConvertPathingType(7)	---@type pathingtype
+    ]]
+
+    -- IsTerrainPathable()
+    -- Returns TRUE if the pathingtype is _not_ set, FALSE if it _is_ set.
+    return (not IsTerrainPathable(x, y, PATHING_TYPE_WALKABILITY) )
+end
+
+
+-------------------------------------- strings and text output --------------------------------------
 
 ---@param num number
 ---@return string
