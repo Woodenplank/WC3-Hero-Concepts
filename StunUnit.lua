@@ -1,6 +1,6 @@
 do
     -- dummy ID should also be declared... somewhere!
-    stun_ability_id = FourCC('____')
+    stun_ability_id = FourCC('A01C')
     -- stun intervals in HALF_SECONDS
 
     ---@param u_target unit
@@ -9,7 +9,7 @@ do
     ---@return boolean & was unit stunned?
     function StunTarget(u_target, u_source, time)
         -- input sanitation
-        if type(time) ~= number then
+        if type(time) ~= "number" then
             print("Attempted to stun for an invalid time segment. Got time = "..tostring(time))
             return false
         end
