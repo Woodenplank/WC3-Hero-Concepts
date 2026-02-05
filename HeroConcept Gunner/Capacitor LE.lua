@@ -1,7 +1,7 @@
 do
-    --[[ This version is functionality identical to the regular Capacitor trigger, 
-        except that rather than launching additional missiles, it creates LIGHTNING EFFECTs
-        that briefly attach to secondary targets, dealing damage instantaneously.
+    --[[ This version is functionaly identical to the regular Capacitor ability,
+        except that instead of launching additional missiles, it creates LIGHTNING EFFECTs
+        that briefly attach to secondary targets, dealing damage instantly.
     ]]
     RAT_id_capacitor = FourCC('A019')
 
