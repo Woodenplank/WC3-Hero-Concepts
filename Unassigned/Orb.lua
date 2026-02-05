@@ -3,7 +3,7 @@ do
     --meta = getmetatable(Orb)      -- fetches the previously assigned metatable
     --equivalently....
     Orb = {}
-    meta = {}
+    local meta = {}
     setmetatable(Orb,meta)
 
     meta.__index = meta             -- redo access by [index] to the metatable
