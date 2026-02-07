@@ -8,7 +8,7 @@ do
 ---------------------------------- _________________ ----------------------------------
 
     function mt:Create(abilID, target_type)
-        local this = setmetatable({}, mt)
+        local this = setmetatable({}, {__index = self})
         this.id = FourCC(abilID)
         this.target_type = target_type
 
