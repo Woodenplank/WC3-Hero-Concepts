@@ -133,8 +133,8 @@ do
 
     function meta:create(params)
         local this = {}
-        setmetatable(this, meta)
-        self.__index = self
+        setmetatable(this, {__index = self})
+        --self.__index = self
 
         --[[ catch all method. No type or input checking. Probably a bad idea
         for key,val in pairs(params) do
