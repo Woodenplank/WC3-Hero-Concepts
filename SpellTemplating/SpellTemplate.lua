@@ -12,7 +12,9 @@ do
         this.id = FourCC(abilID)
         this.target_type = target_type
 
-        -- [[ The below causes a CTD when booting up a WC3 map. Investigate! ]]
+        -- [[ The below causes a CTD when booting up a WC3 map. ]]
+        -- [[ TODO: Investigate! ]]
+
         -- if (type(abilID) == "string") then
         --     print("got string")
         --     this.id = FourCC(abilID)
