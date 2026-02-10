@@ -9,8 +9,10 @@ Short of rewriting a whole damage detection system in lua myself that is --- But
 
  Otherwise...
  * (Hellion) Emberstorm will spawn fiery tornadoes even without activating the associated Hellforge upgrade.
+ * (Hellion x DamageSystem) preventing lethal damage with Dark Pact doesn't work.
  * (Sword-Saint) Passion/Dispassion of a Saint doesn't always properly swap upon activation.
  * (Astromancer) Arcane Almanac (dummy) buff ability icon is not properly hidden.
+ * Type-checking in the Spell-Template causes WC3 to ctd on load. Lack of error message makes this a tad harder to fix. Investigate.
 
 ## Future plans:
 * Centralize all object editor data in a single document, and define the IDs there.
