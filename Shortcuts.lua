@@ -39,7 +39,7 @@ end
 
 -- see: https://www.hiveworkshop.com/attachments/lightninglist-png.116282/
 lightning_names = {
-    ["Chain Lightning Primary"]  = "CLPB"
+    ["Chain Lightning Primary"]  = "CLPB",
     ["Chain Lightning Secondary"]  = "CLSB",
     ["Drain"]  = "DRAB",
     ["Drain Life"]  = "DRAL",
