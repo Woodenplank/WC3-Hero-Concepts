@@ -21,13 +21,14 @@
 [Daemonic Arrow by Vinz](https://www.hiveworkshop.com/threads/daemonic-arrow.337124/)
 [Void Missiles (variations) by Vinz](https://www.hiveworkshop.com/threads/void-missiles.313156/)
 
+[Void (icon) - Berz](https://www.hiveworkshop.com/threads/btnvoid.159999/)
+
 [Witch Doctor (Troll x Nazeebo?)](https://www.hiveworkshop.com/threads/witchdoctor.145809/)
 [Templar Plague Doctor](https://www.hiveworkshop.com/threads/templar-plague-doctor.256875/)
 
-### Import credits list
 
-Zephyrius2412
-    Shadow Bolt.mdx
+
+### Import credits list
 
 SovietElf
     Shadow Orb.mdx
@@ -42,15 +43,17 @@ Vinz
     VoidBall Medium.mdx
     VoidBall Major.mdx
 
-
+Xecutor_ShamanX 
+    WitheringPresence.mdx
 
 
 Riot Games (League of Legends) (Rip by YubelHaouJudai)
-    ChaseByShadows.blp
+    BTNChaseByShadows.blp
 
 Blizzard Entertainment (World of Warcraft)
-    Haramad.mdx (fire1white.blp, Haramad.blp)
+    BTNSpell_Shadow_GatherShadows.blp
+    BTNShadowMend.blp
 
 Blizzard Entertainment (Starcraft II)
-	Hybrid_Protoss.mdx
-	Hybrid_Protoss Icon
+    Hybrid_Protoss.mdx
+    Hybrid_Protoss Icon

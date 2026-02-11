@@ -19,7 +19,6 @@ do
         end
         local reduc = alv*0.15 -- DAMAGE REDUCTION PERCENTAGE HERE
         local atype = BlzGetEventAttackType()
-        print(tostring(atype))
         if (atype==ATTACK_TYPE_NORMAL or atype==ATTACK_TYPE_MAGIC) then
             BlzSetEventDamage(instance.damageamount*(1-reduc))
         end 
