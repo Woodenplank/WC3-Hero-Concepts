@@ -13,16 +13,23 @@ do
         return GetLocZ(GetUnitX(unit), GetUnitY(unit)) + GetUnitFlyHeight(unit)
     end
 
-
+spinster_test_id = FourCC('A01M')
 
     -----------------------------------------------------
 
     local function spinster()
         -- insert conditions here --
+        --- TESTING BLOCK ---
+        local abilId = GetSpellAbilityId()
+		if abilId ~= spinster_test_id then
+			return
+		end
+        ----------------------
 
         -- stats
-        local enemy_u = nil
-        local enemy_p = Player(12)
+        local enemy_u = GetTriggerUnit()    -- for testing puposes only
+        local enemy_p = Player(0)           -- for testing puposes only
+        local z_off=50
         local damage = 100
         local max_area = 1000
         local coll = 90
@@ -33,11 +40,11 @@ do
 
         -- orbs
         local orbs={}
-        for i=0,1 do
+        for i=1,orb_count do
             local offset = (1-2*i)*80
             local o = Orb:create({
-                origin = {x = this.cast_x + offset, y = this.cast_y, z=z_off},
-                destination = {x = this.cast_x, y = this.cast_y, z=z_off},
+                origin = {x = cx + offset, y = cy, z=z_off},
+                destination = {x = cx, y = cy, z=z_off},
                 model = "ShadowOrbMissile v1.2.mdx",
                 source = enemy_u,
                 scale = 1.0,
@@ -54,7 +61,7 @@ do
         local t = CreateTimer()
         local t_interval = 1/40
         local radialstep = (max_area/circuit_time) * t_interval
-        local angstep = ((2*math.pi * loops)/circuit_time) * t_interval
+        local ang_step = ((2*math.pi * loops)/circuit_time) * t_interval
         local ang_lag = 2*math.pi/orb_count
 
         local dist = 0
@@ -81,9 +88,9 @@ do
             -- move orbs accordingly
             if not returning then
                 dist = dist + radialstep
-                ang = ang + angstep
+                ang = ang + ang_step
                 for i,o in ipairs(orbs) do
-                    local nx, ny = PolarStep(cx,cy, dist, ang+i*anglag)
+                    local nx, ny = PolarStep(cx,cy, dist, ang+i*ang_lag)
                     o.coords.x = nx
                     o.coords.y = ny
                     o:hitscan()
@@ -92,7 +99,7 @@ do
             else
                 dist = dist - 20
                 for i,o in ipairs(orbs) do
-                    local nx, ny = PolarStep(cx,cy, dist, i*anglag)
+                    local nx, ny = PolarStep(cx,cy, dist, i*ang_lag)
                     o.coords.x = nx
                     o.coords.y = ny
                     o:hitscan()
@@ -107,7 +114,8 @@ do
     -- Build trigger --
     local function CreateTrig()
         local tr = CreateTrigger()
-        TriggerRegisterAnyUnitEventBJ(tr, --[[------- INSERT EVENT HERE -------]])
+        --TriggerRegisterAnyUnitEventBJ(tr, --[[------- INSERT EVENT HERE -------]])
+        TriggerRegisterAnyUnitEventBJ(tr, EVENT_PLAYER_UNIT_SPELL_EFFECT)   -- for testing purposes
         TriggerAddAction(tr, spinster)
     end
     OnInit.trig(CreateTrig)

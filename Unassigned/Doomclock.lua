@@ -1,26 +1,34 @@
 -- this uses ProjectileType.lua
 do
 
+    doomclock_test_id = FourCC('A01M')
+
     local function doomclock()
         -- insert conditions here --
-
+        --- TESTING BLOCK ---
+        local abilId = GetSpellAbilityId()
+		if abilId ~= spinster_test_id then
+			return
+		end
+        ----------------------
         -- stats
-        local enemy_u = nil
-        local enemy_p = Player(12)
+        local enemy_u = GetTriggerUnit() -- this is for testing purposes only
+        local z_off=50
+        local enemy_p = Player(0)
         local damage = 100
         local max_area = 1000
         local coll = 90
-        local orb_count = 20
+        local orb_count = 12
         local cx, cy = GetUnitX(enemy_u), GetUnitY(enemy_u)
         local circuit_time = 15
 
-        -- orbs
+        -- projectiles
         local orbs={}
         for i=1,orb_count do
             local offset = (1-2*i)*80
-            local o = Orb:create({
-                origin = {x = this.cast_x + offset, y = this.cast_y, z=z_off},
-                destination = {x = this.cast_x, y = this.cast_y, z=z_off},
+            local o = Proj:create({
+                origin = {x = this_x + offset, y = cy, z=z_off-25},
+                destination = {x = cx, y = cy, z=z_off-25},
                 model = "ShadowOrbMissile v1.2.mdx",
                 source = enemy_u,
                 scale = 1.0,
@@ -37,8 +45,8 @@ do
 
         -- lightning
         local nx, ny = PolarStep(cx,cy, max_area, 3/4 * math.pi)
-        local l = CreateLightning("AFOD", false, cx, nx, cy, ny)
-        SetLightningColor(l, 1, 0, 1, 1)
+        local l = AddLightningEx("AFOD", false, cx, cy, z_off, nx, ny,z_off)
+        SetLightningColor(l, 0.85, 0.5, 1, 1)
 
         -- Periodic movement
         local t = CreateTimer()
@@ -47,16 +55,16 @@ do
         local ang_lag = 2*math.pi/orb_count
 
         local spacing = math.floor(max_area/orb_count)
-        local ang = 3/4 * math.pi
+        local ang = 3/2 * math.pi
         TimerStart(t, t_interval, true, function()
             ang = ang+angstep
             -- lightning
             local nx, ny = PolarStep(cx,cy, max_area, ang)
-            MoveLightning(l, false, cx, nx, cy, ny)
+            MoveLightningEx(l, false, cx, cy, z_off, nx, ny, z_off)
 
             -- move orbs accordingly
             for i,o in ipairs(orbs) do
-                local nx, ny = PolarStep(cx,cy, i*dist, ang)
+                local nx, ny = PolarStep(cx,cy, i*spacing, ang)
                 o.coords.x = nx
                 o.coords.y = ny
                 o:hitscan()
@@ -64,7 +72,7 @@ do
             end
 
             -- destructor/finish
-            if ang <= 11/4 * math.pi then
+            if ang >= 7/2 * math.pi then
                 for i, o in ipairs(orbs) do
                     o:destroy()
                 end
@@ -79,7 +87,8 @@ do
     -- Build trigger --
     local function CreateTrig()
         local tr = CreateTrigger()
-        TriggerRegisterAnyUnitEventBJ(tr, --[[------- INSERT EVENT HERE -------]])
+        --TriggerRegisterAnyUnitEventBJ(tr, --[[------- INSERT EVENT HERE -------]])
+        TriggerRegisterAnyUnitEventBJ(tr, EVENT_PLAYER_UNIT_SPELL_EFFECT)   -- for testing purposes
         TriggerAddAction(tr, doomclock)
     end
     OnInit.trig(CreateTrig)
