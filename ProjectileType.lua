@@ -29,9 +29,9 @@ do
         rawset(t, k, v)
     end
 
+
     ---------------------------------- movement methods ----------------------------------
 
-    ---@return nil
     function meta:update()
         if self.handle and self.coords then
             BlzSetSpecialEffectX(self.handle, self.coords.x)
@@ -42,6 +42,12 @@ do
 
     ---@return boolean
     function meta:step()
+        --[[
+            Moves the projectile <speed> distance towards target.
+            
+            Returns true if destination reached.
+            otherwise false.
+        ]]
         local dx = self.destination.x - self.coords.x
         local dy = self.destination.y - self.coords.y
         local dist = math.sqrt(dx*dx + dy*dy)
@@ -52,31 +58,75 @@ do
         local nx, ny = PolarStep(self.coords.x, self.coords.y, self.speed, ang)
         self.coords = {x = nx, y = ny, z=self.coords.z}
         self:update()
-        return dist <= self.speed
+        return false
     end
     
     ---------------------------------- collision ----------------------------------
 
     ---@return boolean
     function meta:collision_nowalk()
-        -- This doesn't respect the collision size of the projectile
-        -- but this is much faster than checking if the collision circle
-        -- overlaps ANY unwalkable pathing cell
+        --[[
+            Detects if the projectile has hit "unwalkable" terrain.
+
+            This doesn't respect the collision size of the projectile
+            but this is much faster than checking if the collision circle
+            overlaps ANY unwalkable pathing cell
+        --]]
         return (not IsTerrainPathable(self.coords.x, self.coords.y, PATHING_TYPE_WALKABILITY) )
     end
 
 
+    ---@param filter string
+    ---@return boolean
+    function meta:collision_unit(filter)
+        --[[
+            Detects if the projectile has collided with a unit.
+
+            This does NOT account for damage/units-already hit.
+            See "hitscan()" function for that.
+
+            Filter can be set to "ally"/"friend" or "enemy"
+            Optionally leave as nil for either case to trigger.
+            Never detects dead units.
+        ]]
+        local ug = CreateGroup()
+        local cond = Condition(function() 
+            return not IsUnitType(GetFilterUnit(), UNIT_TYPE_DEAD)
+        end)
+        if filter=="ally" or filter=="friend" then
+            cond = Condition(function() 
+                local fu= GetFilterUnit()
+                return not IsUnitEnemy(fu, self.owner)
+                and not IsUnitType(fu, UNIT_TYPE_DEAD)
+            end)
+        elseif filter=="enemy" then
+            cond = Condition(function() 
+                local fu= GetFilterUnit()
+                return IsUnitEnemy(fu, self.owner)
+                and not IsUnitType(fu, UNIT_TYPE_DEAD)
+            end)
+        end
+        GroupEnumUnitsInRange(ug, self.coords.x, self.coords.y, self.collision, cond)
+        return (CountUnitsInGroup(ug)>0)
+    end
+
+
     local destructables_rect=Rect(0., 0., 0., 0.)
-     --[[ WARNING
-        EnumDestructablesInRect() also catches hidden destructables.
-        There is no native way to detect if a destructable is set to hidden.
-        
-        TODO:
-        • any game action which hides destructables should also set a custom flag
-        • this function should be updated to check that flag
-    ]]
     ---@return boolean
     function meta:collision_destructable()
+        --[[
+        Detects if the projectile has hit a destructible.
+
+        RETURN
+            True if a destructible is within <collision> range
+            False otherwise
+        
+        WARNING
+            EnumDestructablesInRect() also catches hidden destructables.
+            To avoid issues...
+            • If any game action hides a destructable, it should also set a custom flag
+            • this function should be updated to check that flag
+        ]]
         SetRect(destructables_rect, self.coords.x-self.collision, self.coords.y-self.collision, self.coords.x+self.collision, self.coords.y+self.collision)
         hit = true,
         EnumDestructablesInRect(destructables_rect, nil, function()
@@ -84,17 +134,25 @@ do
             if des~=nil then
                 return true
             end
-        )        return false
+        end)
+        return false
     end
 
     --------------------------------------- damage methods --------------------------------------------
 
-
     ---@return boolean
     function meta:hitscan()
+        --[[
+            Detects enemies in the <collision> range of the projectile, and damages them.
+            Units damaged are added to self.hit group, to prevent multiple damage procs.
+            
+            RETURN
+                True if a valid target was in range
+                False otherwise
+        ]]
         local ug = CreateGroup()
         local cond = Condition(function() local fu= GetFilterUnit()
-            return not IsUnitEnemy(fu, self.owner)
+            return IsUnitEnemy(fu, self.owner)
             and not IsUnitType(fu, UNIT_TYPE_DEAD)
             and not IsUnitInGroup(fu, self.hit)
         end)
@@ -115,16 +173,71 @@ do
     end
     
 
+    ---------------------------------- visual methods ----------------------------------
+
+    ---@param model_str string
+    function meta:remodel(model_str)
+        --[[
+            Changes the model of projectile to the desired string
+            Then updates size and height accordingly.
+
+            There's no native way to check if a model string is appropiate
+            So beware of bad formatting or typos.
+        ]]
+        if type(model_str) ~= "string" then 
+            print("Error! Expected string in Proj:remodel, but got ".. type(model_str))
+            return
+        else
+        DestroyEffect(self.handle)
+        self.handle=nil
+
+        self.model = model_str
+        self.handle = AddSpecialEffect(model_str, self.coords.x, self.coords.y)
+        BlzSetSpecialEffectHeight(self.handle, self.coords.z)
+        BlzSetSpecialEffectScale(self.handle, self.scale)
+    end
+
+    ---@param value number
+    function meta:rescale(value)
+        --[[
+            Updates model scale to new value.
+            Inputs other than number will return error.
+        ]]
+        if type(value) ~= "number" then
+            print("Error! Expected number in Proj:rescale, but got "..type(value))
+            return
+        end
+        self.scale = value
+        BlzSetSpecialEffectScale(self.handle, self.scale)
+    end
+
+    ---@param value number
+    function meta:alpha(value)
+        --[[
+            Updates model alpha to new value.
+            Inputs other than number will return error.
+        ]]
+        if type(value) ~= "number" then
+            print("Error! Expected number in Proj:alpha, but got "..type(value))
+            return
+        end
+        self.alpha = value
+        BlzSetSpecialEffectAlpha(self.handle, self.alpha)
+    end
+
+
     ---------------------------------- creator and destructor methods ----------------------------------
 
     function meta:destroy()
         if self.handle then
             DestroyEffect(self.handle)
             self.handle = nil
-            DestroyGroup(self.hit)
         end
+        DestroyGroup(self.hit)
     end
 
+
+    ---@param params table
     function meta:create(params)
         local this = {}
         setmetatable(this, {__index = self})
@@ -165,4 +278,24 @@ do
         return this
     end
     -- END OF OBJECT DEFINITION --
+end
+
+
+-- template (example usage)
+if false then
+    -- ...
+    local casting_unit = GetTriggerUnit()
+    local target_unit = GetSpellTargetUnit()
+    local spell_lvl = GetUnitAbilityLevel(casting_unit, GetSpellAbilityId())
+    local my_params = {
+        origin = {GetUnitX(casting_unit), GetUnitY(casting_unit), 50},
+        destination = {GetUnitX(target_unit), GetUnitY(target_unit), GetUnitFlyHeight(target_unit)+50},
+        source = casting_unit,
+        collision = 200,
+        dmg = 100*spell_lvl,
+        model = "Abilities\\Weapons\\DemolisherFireMissile\\DemolisherFireMissile.mdl",
+        speed = 20
+    }
+    local projectile = Proj:create(my_params)
+    -- ...
 end
