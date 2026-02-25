@@ -19,7 +19,7 @@ do
         end
 
         -- ability stats
-        local this = DragonsBreathSpellObj:NewInstance()
+        local this = StormBoltSpellObj:NewInstance()
         local dmg = 100 * (this.alv+1)
         -- local dmg = GetAbilityField(StormBoltSpellObj.id, "artdur",this.alv) -- use "art duration" real as damage stat.
         
