@@ -66,14 +66,14 @@ do
         new.cast_x = GetUnitX(new.caster)
         new.cast_y = GetUnitY(new.caster)
         -- 'Targetting'-specific getters
-        if self.target_type == "unit" then
+        if self.target_type == "unit" or self.target_type == "unit target" then
             new.target = GetSpellTargetUnit()
             new.targ_x = GetUnitX(new.target)
             new.targ_y = GetUnitY(new.target)
-        elseif self.target_type == "point" then
+        elseif self.target_type == "point" or self.target_type == "point target" then
             new.targ_x = GetSpellTargetX()
             new.targ_y = GetSpellTargetY()
-        elseif self.target_type == "instant" then
+        elseif self.target_type == "instant" or self.target_type == "instant (no target)" then
             new.targ_x = new.cast_x
             new.targ_y = new.cast_y
         else -- safety
