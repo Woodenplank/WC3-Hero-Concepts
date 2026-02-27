@@ -7,7 +7,8 @@ do
 
     -- Variables used throughout this spell setup.
     UAS_tab_moltenshield = {} -- table for storing unit shield values (like a GUI hashtable)
-    local UAS_id_moltenshieldbuff = FourCC("____") -- ID of the dummy ability
+    UAS_tab_moltenshieldSFX = {} -- table for storing special effect handles (like a GUI hashtable)
+    local UAS_id_moltenshieldbuff = FourCC("S000") -- ID of the dummy ability
 
 
     -- helper function to remove the dummy buff/ability and special effect
@@ -15,13 +16,13 @@ do
         UnitRemoveAbility(u, UAS_id_moltenshieldbuff)
         BlzUnitHideAbility(u, UAS_id_moltenshieldbuff, false)
         local id = GetHandleId(u)
-        DestroyEffect(MoltenShieldSFX[id])
+        DestroyEffect(UAS_tab_moltenshieldSFX[id])
     end
 
 
     -- Damage shielding actions
     local function MoltenShieldBlock()     
-        local u = GetEventDamageTarget()
+        local u = BlzGetEventDamageTarget()
         local lvl = GetUnitAbilityLevel(u, UAS_id_moltenshieldbuff)
 
         -- early return if the damaged unit does not have the dummy buff
@@ -30,7 +31,7 @@ do
         end
 
         local id = GetHandleId(u)
-        local dmg = BlzGetEventDamage()
+        local dmg = GetEventDamage()
         local shield = UAS_tab_moltenshield[id]
         if dmg >= shield then
             dmg = dmg - shield
@@ -48,7 +49,7 @@ do
 
 
     -- Main spellcast actions
-    local MoltenShieldSpellObj = Spell:Create("___", "unit") -- main ability object
+    local MoltenShieldSpellObj = Spell:Create("A000", "unit") -- main ability object
     local function MoltenShieldCast()
         -- Exit early if this is the wrong ability
         local abilId = GetSpellAbilityId()
@@ -60,7 +61,7 @@ do
         local this = MoltenShieldSpellObj:NewInstance()
         local t_interval = 0.5                  -- this is how often (in seconds) the timer updates
         local shield_cap = this.herodur         -- use CHANNEL - Duration (Hero) in object editor to set shield value
-        local dps = this.artdur * t_interval    -- use CHANNEL - Art Duration in object editor to set damage per second
+        local dps = GetAbilityField(this.id, "artdur", this.alv) * t_interval    -- use CHANNEL - Art Duration in object editor to set damage per second
         local targ_id = GetHandleId(this.target)
         local cast_id = GetHandleId(this.caster)
 
@@ -70,7 +71,7 @@ do
 
 
         -- Dummy ability (buff)
-        MoltenShieldSFX[id] = AddSpecialEffectTarget("FireShell.mdx", this.target, 'origin')
+        UAS_tab_moltenshieldSFX[targ_id] = AddSpecialEffectTarget("FireShell.mdx", this.target, 'chest')
         UnitAddAbility(this.target, UAS_id_moltenshieldbuff)
         SetUnitAbilityLevel(this.target, UAS_id_moltenshieldbuff, this.alv+1)
         BlzUnitHideAbility(this.target, UAS_id_moltenshieldbuff, true)
@@ -91,12 +92,12 @@ do
 
         -- Periodic timing
         local dur = 0
-        TimerStart(t, t_interval, false, function()
+        TimerStart(t, t_interval, true, function()
             -- adjust damage based on remaining shield
             local dps_mod = dps * (1.0 + (1-UAS_tab_moltenshield[targ_id]/shield_cap))    -- linear scaling. e.g. 30% shield left = 70% more dps
             
             -- Damage enemies around this target
-            EnumUnitsInRange(ug, GetUnitX(this.target), GetUnitY(this.target), this.aoe, target_cond)
+            GroupEnumUnitsInRange(ug, GetUnitX(this.target), GetUnitY(this.target), this.aoe, target_cond)
             ForGroup(ug, function()
                 local pu = GetEnumUnit()
                 UnitDamageTarget(this.caster, pu, dps_mod, true, false, ATTACK_TYPE_NORMAL, DAMAGE_TYPE_NORMAL, nil)
@@ -112,11 +113,9 @@ do
 
                 -- Clean memory
                 DestroyGroup(ug)
-                DestroyCondition(cond)
-                PauseTimer(t_dur)
-                DestroyTimer(t_dur)
-                PauseTimer(t_dps)
-                DestroyTimer(t_dps)
+                DestroyCondition(target_cond)
+                PauseTimer(t)
+                DestroyTimer(t)
             end
         end)
     -- END --
