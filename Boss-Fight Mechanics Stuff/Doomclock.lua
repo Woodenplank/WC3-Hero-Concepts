@@ -1,52 +1,53 @@
--- this uses ProjectileType.lua
+-- requires ProjectileType.lua
 do
 
-    doomclock_test_id = FourCC('A01M')
+    doomclock_test_id = FourCC('A002')
 
     local function doomclock()
         -- insert conditions here --
         --- TESTING BLOCK ---
         local abilId = GetSpellAbilityId()
-		if abilId ~= spinster_test_id then
+		if abilId ~= doomclock_test_id then
 			return
 		end
         ----------------------
         -- stats
         local enemy_u = GetTriggerUnit() -- this is for testing purposes only
-        local z_off=50
+        local z_off=30
         local enemy_p = Player(0)
-        local damage = 100
+        local damage = 150
         local max_area = 1000
         local coll = 90
-        local orb_count = 12
+        local orb_count = 10
         local cx, cy = GetUnitX(enemy_u), GetUnitY(enemy_u)
-        local circuit_time = 15
+        local circuit_time = 12
 
         -- projectiles
         local orbs={}
         for i=1,orb_count do
             local offset = (1-2*i)*80
             local o = Proj:create({
-                origin = {x = this_x + offset, y = cy, z=z_off-25},
+                origin = {x = cx + offset, y = cy, z=z_off-25},
                 destination = {x = cx, y = cy, z=z_off-25},
                 model = "ShadowOrbMissile v1.2.mdx",
                 source = enemy_u,
+                dmg=damage,
                 scale = 1.0,
                 collision = coll,
             })
             table.insert(orbs, o)
         end
 
-        local anim_dur = 1.5
+        local anim_dur = 2.066
         local t_anim = CreateTimer()
         TimerStart(t_anim, anim_dur, true, function()
-            SetUnitAnimation(enemy_u, "spell channel")
+            SetUnitAnimation(enemy_u, "stand channel")
         end)
 
         -- lightning
         local nx, ny = PolarStep(cx,cy, max_area, 3/4 * math.pi)
         local l = AddLightningEx("AFOD", false, cx, cy, z_off, nx, ny,z_off)
-        SetLightningColor(l, 0.85, 0.5, 1, 1)
+        SetLightningColor(l, 0.85, 0.0, 1, 1)
 
         -- Periodic movement
         local t = CreateTimer()
@@ -79,6 +80,10 @@ do
                 PauseTimer(t)
                 DestroyTimer(t)
                 DestroyLightning(l)
+                
+                PauseTimer(t_anim)
+                DestroyTimer(t_anim)
+                ResetUnitAnimation(enemy_u)
             end
         end)
         -- END --
