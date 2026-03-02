@@ -1,30 +1,18 @@
--- this uses ProjectileType.lua
+-- this uses orb.lua
+-- TODO: switch to projectile type. Although it doesn't matter much here (yet).
 do
-    -- For getting proper z values for Special Effects
-    local location = Location(0., 0.)
-    local rect = Rect(0., 0., 0., 0.)
-
-    local function GetLocZ(x, y)
-        MoveLocation(location, x, y)
-        return GetLocationZ(location)
-    end
-
-    local function GetUnitZ(unit)
-        return GetLocZ(GetUnitX(unit), GetUnitY(unit)) + GetUnitFlyHeight(unit)
-    end
-
-spinster_test_id = FourCC('A001')
-
-    -----------------------------------------------------
+-----------------------------------------------------
+spinster_test_id = FourCC('A001') -- Testing type ---
+-----------------------------------------------------
 
     local function spinster()
         -- insert conditions here --
-        --- TESTING BLOCK ---
+        --- TESTING BLOCK BEGIN ---
         local abilId = GetSpellAbilityId()
 		if abilId ~= spinster_test_id then
 			return
 		end
-        ----------------------
+        --- TESTING BLOCK END ---
 
         -- stats
         local enemy_u = GetTriggerUnit()    -- for testing puposes only
@@ -36,7 +24,7 @@ spinster_test_id = FourCC('A001')
         local orb_count = 12
         local cx, cy = GetUnitX(enemy_u), GetUnitY(enemy_u)
         local circuit_time = 15
-        local loops = 6
+        local loops = 5
 
         -- orbs
         local orbs={}
@@ -53,11 +41,14 @@ spinster_test_id = FourCC('A001')
             table.insert(orbs, o)
         end
 
-        -- Periodic movement
-        --[[
-            Outwards pattern is circular twirly-whirly
-            Inwards pattern is straight-shot back to center.
-        ]]
+        -- prevent damage stacking
+        -- units hit by the orbs will be in a safe group for <dmg_cd> seconds.
+        local ug_recently = CreateGroup()
+        local dmg_cd = 0.5
+
+        -- Do the dance!
+        -- Outwards pattern is circular twirly-whirly
+        -- Inwards pattern is straight-shot back to center.
         local t = CreateTimer()
         local t_interval = 1/40
         local radialstep = (max_area/circuit_time) * t_interval
@@ -75,16 +66,15 @@ spinster_test_id = FourCC('A001')
                 end
                 PauseTimer(t)
                 DestroyTimer(t)
+                DestroyGroup(ug_recently)
             end
 
             -- return pattern reset
             if dist >= max_area then
                 returning = true
-                for i, o in ipairs(orbs) do
-                    o:flush()
-                end
             end
 
+            local cx, cy = GetUnitX(enemy_u), GetUnitY(enemy_u)
             -- move orbs accordingly
             if not returning then
                 dist = dist + radialstep
@@ -93,7 +83,6 @@ spinster_test_id = FourCC('A001')
                     local nx, ny = PolarStep(cx,cy, dist, ang+i*ang_lag)
                     o.coords.x = nx
                     o.coords.y = ny
-                    o:hitscan()
                     o:update()
                 end
             else
@@ -102,11 +91,35 @@ spinster_test_id = FourCC('A001')
                     local nx, ny = PolarStep(cx,cy, dist, i*ang_lag)
                     o.coords.x = nx
                     o.coords.y = ny
-                    o:hitscan()
                     o:update()
                 end
             end
-            -- end of orb movement --
+            --------- custom damage functionality begin ---------------
+            --[[This could probably be worked in as an extra member function... TOO BAD!]]
+            for _,o in ipairs(orbs) do
+                local cond = Condition(function() local fu= GetFilterUnit()
+                    return IsUnitEnemy(fu, o.owner)
+                    and not IsUnitType(fu, UNIT_TYPE_DEAD)
+                    and not IsUnitInGroup(fu, ug_recently)
+                end)
+                
+                local ug = CreateGroup()
+                GroupEnumUnitsInRange(ug, o.coords.x, o.coords.y, o.area, cond)
+                ForGroup(ug, function()
+                    local pu = GetEnumUnit()
+                    UnitDamageTarget(o.source, pu, damage, true, false, ATTACK_TYPE_NORMAL, DAMAGE_TYPE_NORMAL, nil)
+                    GroupAddUnit(ug_recently, pu)
+                    local t_recently = CreateTimer()
+                    TimerStart(t_recently, 2.0, false,function()
+                        GroupRemoveUnit(ug_recently, pu)
+                        PauseTimer(t_recently)
+                        DestroyTimer(t_recently)
+                    end)
+                end)
+                DestroyGroup(ug)
+                DestroyCondition(cond)
+            end
+            --------- custom damage functionality end ---------------
         end)
         -- END --
     end
