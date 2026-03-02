@@ -5,8 +5,7 @@ do
     Proj = {}
     local meta = {}
     setmetatable(Proj,meta)
-
-    meta.__index = meta             -- redo access by [index] to the metatable
+    setmetatable(Proj, {__index = meta})
     
     -- Spelling-error protection when initiating new instances
     local allowed_fields = {
@@ -160,7 +159,7 @@ do
         local did_collide = (CountUnitsInGroup(ug)>0)
         ForGroup(ug, function()
             local pu = GetEnumUnit()
-            UnitDamageTarget(self.owner, pu, self.dmg, true, false, DAMAGE_TYPE_NORMAL, ATTACK_TYPE_NORMAL, nil)
+            UnitDamageTarget(self.source, pu, self.dmg, true, false, ATTACK_TYPE_NORMAL, DAMAGE_TYPE_NORMAL, nil)
             GroupAddUnit(self.hit, pu)
         end)
         DestroyGroup(ug)
@@ -187,7 +186,7 @@ do
         if type(model_str) ~= "string" then 
             print("Error! Expected string in Proj:remodel, but got ".. type(model_str))
             return
-        else
+        end
         DestroyEffect(self.handle)
         self.handle=nil
 
