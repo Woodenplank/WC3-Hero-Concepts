@@ -43,5 +43,5 @@ do
 
         hammer:launch()
     end
-    DragonsBreathSpellObj:MakeTrigger(dbcast)
+    StormBoltSpellObj:MakeTrigger(stormboltcast)
 end
