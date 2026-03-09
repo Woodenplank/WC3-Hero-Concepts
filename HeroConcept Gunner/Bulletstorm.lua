@@ -11,8 +11,11 @@ do
 
         -- Getters
         local u = GetTriggerUnit()
+        -- local alv = GetUnitAbilityLevel(u, RAT_id_spool)-1
         local dur = GetAbilityField(RAT_id_spray, "followthrough", 0)
-        local dmg = BlzGetUnitBaseDamage(u,0) -- replace with GetUnitAvgAttackDamage
+        -- local dur = GetAbilityField(RAT_id_spray, "followthrough", alv) -- for level-scaled version
+        local dmg = BlzGetUnitBaseDamage(u,0)
+        -- local dmg = BlzGetUnitBaseDamage(u,0) * (alv/3) -- for level-scaled version
         local owner = GetOwningPlayer(u)
         local pi = GetPlayerId(owner)
 
