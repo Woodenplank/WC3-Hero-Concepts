@@ -13,31 +13,41 @@ do
         local alv = GetUnitAbilityLevel(u, RAT_id_sewerbrew) - 1
         local dur = GetAbilityField(RAT_id_sewerbrew, "normaldur", alv)
         local heal = GetAbilityField(RAT_id_sewerbrew, "herodur", alv)
-        local hot = heal * 1.5/dur --3/(dur*2)
-        --local aoe = GetAbilityField(RAT_id_sewerbrew, "aoe", alv)
-        --local init_x, init_y = GetUnitX(u), GetUnitY(u)
-        --local ug = CreateGroup()
+        local hot = heal * 1.5/dur
 
-        -- Purge
-        -- TODO populate objectconstant with poison debuff IDs.        
-        -- if PoisonDebuffsList then 
-        --     for _,debuffcode in PoisonDebuffsList do
-        --         UnitRemoveAbility(u, debuffcode)
+        --[[
+            I also wanted this ability to purge all Poison & Disease debuffs from the Hero and nearby allies on use.
+            However, in a basic test map with no debuffs, this doesn't make much sense.
+
+            For an actual (RPG?) map implementation, fill a (global) table with Poison debuff ability IDs, 
+            then feed that table into this ability
+        ]]
+        -- local aoe = GetAbilityField(RAT_id_sewerbrew, "aoe", alv)
+        -- local init_x, init_y = GetUnitX(u), GetUnitY(u)
+        -- local ug = CreateGroup()
+        -- ForGroup(ug, function()
+        --     local pu = GetEnumUnit()
+        --     if IsUnitEnemy(u, GetOwningPlayer(pu)) then 
+        --         for _,id in PoisonDebuffsList do
+        --             UnitRemoveAbility(pu, debuff_id)
+        --         end
         --     end
-        -- end
+        -- end)
 
         QuickHealUnit(u, heal)
         -- Healing over time
+        local heal_sfx = AddSpecialEffectTarget("Abilities\\Spells\\NightElf\\Tranquility\\TranquilityTarget.mdl", u, "origin")
         local t = CreateTimer()
         local tinterval = 0.5
         TimerStart(t, tinterval, true, function()
             QuickHealUnit(u, hot)
-            DestroyEffect(AddSpecialEffect("Abilities\\Spells\\NightElf\\Tranquility\\TranquilityTarget.mdl", GetUnitX(u), GetUnitY(u)))
 
+            -- Check for effect ending
             dur = dur - tinterval
             if (dur<=0) then
                 PauseTimer(t)
                 DestroyTimer(t)
+                DestroyEffect(heal_sfx)
             end
         end)
 
