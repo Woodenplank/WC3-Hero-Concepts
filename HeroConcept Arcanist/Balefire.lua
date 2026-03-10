@@ -15,7 +15,7 @@ do
         local last_x, last_y = this.targ_x, this.targ_y
         
         -- Main target sfx
-        local mainsfx = AddSpecialEffectTarget("WitheringPresence.mdx", this.target, "chest")
+        local mainsfx = AddSpecialEffectTarget("WitheringPresence.mdx", this.target, "origin")
 
         -- WC3 objects
         local ug = CreateGroup()
