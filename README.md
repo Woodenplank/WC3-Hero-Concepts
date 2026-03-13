@@ -4,5 +4,7 @@ Everything here is in lua - not because I'm amazingly profficient with that, but
 Feel free to steal/copy/take-as-inspiration/loan/pilfer or borrow from it as you please.
 All of the abilities here rely on Bribe of Hiveworkshop.com's [Total Initialization](https://www.hiveworkshop.com/threads/total-initialization.317099/) system to create the triggers.
 
+See [this repository] for all necessary "mini-libraries" I made for these Hero setups.
+
 Beware of outstanding issues! Usually noted down with --inline code comments.
 Use at your own risk.
