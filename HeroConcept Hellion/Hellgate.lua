@@ -1,57 +1,44 @@
+-- requires HellionGlobal.lua
+-- requires SpellTemplate.lua
 do
     --[[
     After a brief delay; teleport to target area in a blaze of hellfire, dealing <A00Q:ANcl,HeroDur1> damage to all nearby enemies on arrival.
     ]]
     local function HellgateCast()
         local abilId = GetSpellAbilityId()
-		if abilId ~= HEL_id_hellgate then
+		if abilId ~= HEL_hellgateSpell.id then
 			return
 		end
 
         -- Getters
-        local u = GetTriggerUnit()
-        local ug = CreateGroup()
-        local alv = GetUnitAbilityLevel(u, HEL_id_hellgate) - 1
-        
-        -- Fetch ability stats
-        local dmg = GetAbilityField('A00Q', "herodur", alv)
-        local aoe = GetAbilityField('A00Q', "area", alv)
+        local this = HEL_hellgateSpell:NewInstance()
+        local dmg = this.herodur
 
         -- Sinhammer mod
-        local SH_alv = GetUnitAbilityLevel(u, SHbuff_abilId)
-        local SHbool, SHdmgfactor, SHhealfactor = GetSinhammerMod(SH_alv)
+        local SHbool, SHdmgfactor, SHhealfactor = GetSinhammerMod(this.caster)
         if (SHbool) then
             dmg = dmg*SHdmgfactor
         end
 
         -- Teleport
-        local x = GetSpellTargetX()
-        local y = GetSpellTargetY()
-        SetUnitX(u, x)
-        SetUnitY(u, y)
-        DestroyEffect(AddSpecialEffect("Abilities\\Spells\\Human\\Flamestrike\\Flamestrike1.mdl", x, y))
+        SetUnitX(this.caster, this.targ_x)
+        SetUnitY(this.caster, this.targ_y)
+        DestroyEffect(AddSpecialEffect("Abilities\\Spells\\Human\\Flamestrike\\Flamestrike1.mdl", this.targ_x, this.targ_y))
 
         -- Area damage
-        GroupEnumUnitsInRange(ug, x, y, aoe, nil)
+        local ug = CreateGroup()
+        GroupEnumUnitsInRange(ug, this.targ_x, this.targ_y, this.aoe, nil)
         ForGroup(ug, function()
-            local enemy = GetEnumUnit()
-            if IsUnitEnemy(u, GetOwningPlayer(enemy)) then
-                UnitDamageTarget(u, enemy, dmg, true, false, ATTACK_TYPE_NORMAL, DAMAGE_TYPE_NORMAL, nil)
+            local pu = GetEnumUnit()
+            if IsUnitEnemy(pu, this.castplayer) then
+                UnitDamageTarget(this.caster, pu, dmg, true, false, ATTACK_TYPE_NORMAL, DAMAGE_TYPE_NORMAL, nil)
                 --Sinhammer healing
-                if (SHbool) then QuickHealUnit(u, SHhealfactor*dmg) end
+                if (SHbool) then QuickHealUnit(this.caster, SHhealfactor*dmg) end
             end
         end)
 
         DestroyGroup(ug)
         -- END --
     end
-
-
-    -- Build trigger --
-    local function CreateHellgateTrig()
-        local tr = CreateTrigger()
-        TriggerRegisterAnyUnitEventBJ(tr, EVENT_PLAYER_UNIT_SPELL_EFFECT)
-        TriggerAddAction(tr, HellgateCast)
-    end
-    OnInit.trig(CreateHellgateTrig)
+    HEL_hellgateSpell:MakeTrigger(HellgateCast)
 end
