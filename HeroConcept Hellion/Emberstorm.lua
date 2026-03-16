@@ -1,3 +1,5 @@
+-- requires HellionGlobal.lua
+-- requires SpellTemplate.lua
 do
 --[[
     Ignites the Hellion in a storm of fire and blades, spinning around to deal periodic damage to nearby enemies. 
@@ -15,67 +17,64 @@ do
     The trigger only takes care of area DPS and the Flame Tornado spawns.
 ]]
     local function EmberstormCast()
-    -- Exit early if this is the wrong ability
-    local abilId = GetSpellAbilityId()
-    if abilId ~= HEL_id_emberstorm then
-        return
-    end
+        -- Exit early if this is the wrong ability
+        local abilId = GetSpellAbilityId()
+        if abilId ~= HEL_emberSpell.id then
+            return
+        end
 
-    -- Getters
-    local u = GetTriggerUnit()
-    local alv = GetUnitAbilityLevel(u, HEL_id_emberstorm)
-    
-    -- Ability stats
-    local tinterval = 0.5
-    local dmg = (60 + 20*(alv)) * tinterval
-    local aoe = GetAbilityField(HEL_id_emberstorm, "aoe", alv-1)
-    local dur = GetAbilityField(HEL_id_emberstorm, "herodur", alv-1)
+        -- ability stats
+        local this = HEL_emberSpell:NewInstance()
+        local tinterval = 0.5
+        local dmg = (60 + 20*(this.alv+1)) * tinterval
+        local aoe = this.aoe
+        local dur = this.herodur
 
-    -- Objects
-    local ug = CreateGroup()
-    local t = CreateTimer()
+        -- WC3 Objects
+        local ug = CreateGroup()
+        local t = CreateTimer()
 
-    -- Sinhammer mod
-    local SH_alv = GetUnitAbilityLevel(u, SHbuff_abilId)
-    local SHbool, SHdmgfactor, SHhealfactor = GetSinhammerMod(SH_alv)
-    if (SHbool) then
-        dmg = dmg*SHdmgfactor
-    end
+        -- Sinhammer mod
+        local SHbool, SHdmgfactor, SHhealfactor = GetSinhammerMod(this.caster)
+        if (SHbool) then
+            dmg = dmg*SHdmgfactor
+        end
 
-    -- Hellforge mod
-    local SevenTonguesOfPytho = ( GetUnitAbilityLevel(u, HellforgedSpells["SevenTonguesOfPytho"]) > 0 )
+        -- Hellforge mod
+        local SevenTonguesOfPytho = (GetUnitAbilityLevel(this.caster, HellforgedSpells["SevenTonguesOfPytho"]) > 0)
 
-    TimerStart(t, tinterval, true, function()
-        local x = GetUnitX(u)
-        local y = GetUnitY(u)
-        -- Deal area damage
-        GroupEnumUnitsInRange(ug, x, y, aoe, nil)
-        ForGroup(ug, function()
-            local enemy = GetEnumUnit()
-            if IsUnitEnemy(u, GetOwningPlayer(enemy)) then
-                UnitDamageTarget(u, enemy, dmg, true, false, ATTACK_TYPE_NORMAL, DAMAGE_TYPE_NORMAL, nil)
-                --Sinhammer healing
-                if (SHbool) then QuickHealUnit(u, SHhealfactor*dmg) end
+        -- AoE dps
+        TimerStart(t, tinterval, true, function()
+            local x = GetUnitX(this.caster)
+            local y = GetUnitY(this.caster)
+            -- Deal area damage
+            GroupEnumUnitsInRange(ug, x, y, this.aoe, nil)
+            ForGroup(ug, function()
+                local pu = GetEnumUnit()
+                if IsUnitEnemy(pu, this.castplayer) then
+                    UnitDamageTarget(this.caster, pu, dmg, true, false, ATTACK_TYPE_NORMAL, DAMAGE_TYPE_NORMAL, nil)
+                    --Sinhammer healing
+                    if (SHbool) then QuickHealUnit(this.caster, SHhealfactor*dmg) end
+                end
+            end)
+            
+            -- Flame tornados
+            if SevenTonguesOfPytho then
+                if (math.random() <= 0.4) then
+                    local summoned = CreateUnit(this.castplayer, utype_FlameTornado, x, y, 270)
+                    UnitApplyTimedLife(summoned, FourCC('BTLF'), math.random(3,5))
+                end
+            end
+
+            -- Check for ending
+            dur = dur - tinterval
+            if (dur <= 0) then
+                PauseTimer(t)
+                DestroyTimer(t)
+                DestroyGroup(ug)
             end
         end)
-        
-        -- Flame tornados
-        if SevenTonguesOfPytho then
-            if (math.random() <= 0.4) then
-                local summoned = CreateUnit(GetOwningPlayer(u), FourCC('e001'), x, y, 270)
-                UnitApplyTimedLife(summoned, FourCC('BTLF'), math.random(3,5))
-            end
-        end
-
-        -- Check for ending
-        dur = dur - tinterval
-        if (dur <= 0) then
-            PauseTimer(t)
-            DestroyTimer(t)
-            DestroyGroup(ug)
-        end
-    end)
-    -- END --
+        -- END --
     end
 
     -- Build trigger --
@@ -84,6 +83,5 @@ do
         TriggerRegisterAnyUnitEventBJ(tr, EVENT_PLAYER_UNIT_SPELL_EFFECT)
         TriggerAddAction(tr, EmberstormCast)
     end
-
     OnInit.trig(CreateEmberstormTrig)
 end
