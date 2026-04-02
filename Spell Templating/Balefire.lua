@@ -1,4 +1,8 @@
 -- requires SpellTemplate.lua
+--[[ ability description
+    Places a curse upon a target enemy, dealing damage over time to the target, and any foes nearby.
+    If the target dies before the effect expires, the balefire will linger on the ground where it fell.
+]]
 do
     local BalefireSpellObj = Spell:Create("A01M", "unit") -- main ability object
     local function BalefireCast()

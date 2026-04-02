@@ -1,6 +1,10 @@
 -- takes inspiration from SC2 Yamato Cannon (Co-op Pride of Augustgrad version)
 -- requires SpellTemplate.lua
 -- requires Chopinski Missiles
+--[[ Ability description
+    Launches a barrage of <count> projectiles towards a target enemy unit, striking it and nearby foes at random.
+    (Main target is hit at least once. A single target may be hit multiple times)
+]]
 do
     local StellarBarrageSpellObj = Spell:Create("A01F", "unit") -- main ability object
     local function StellarBarrageCast()

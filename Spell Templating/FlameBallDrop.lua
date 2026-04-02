@@ -1,6 +1,8 @@
-
 -- requires Chopinski's Missile system
 -- requires SpellTemplate.lua
+--[[ Ability description
+    Creates a fiery orb over target area, which will periodically launch fiery projectiles upon nearby foes.
+]]
 do
     local FlameBallSpellObj = Spell:Create("A001", "point")
 
