@@ -1,3 +1,6 @@
+-- requires SpellTemplate.lua
+-- requires QuickHeal.lua
+-- requires Geometry.lua
 do
     --[[ in-game tooltip
     Tethers all nearby allies' life forces with the [Caster], linking with them for up to <A01E:ANcl,Dur1> seconds. 
@@ -9,25 +12,20 @@ do
     -- Hence, the actual heal value is halved after fetching from Object Data.
     ]]
     
-    UAS_id_arcanefount = FourCC('A01E')
-
+    local ArcaneFountSpellObj = Spell:Create("A01E", "instant")
     local function ArcaneFountCast()
         -- exit early if wrong ability
         local abilId = GetSpellAbilityId()
-		if abilId ~= UAS_id_arcanefount then
+		if abilId ~= ArcaneFountSpellObj.id then
 			return
 		end
 
-        -- Getters
-        local caster= GetTriggerUnit()
-        local owner = GetOwningPlayer(caster)
-        local alv = GetUnitAbilityLevel(caster, UAS_id_arcanefount) - 1
-        local dur = GetAbilityField(UAS_id_arcanefount, "normaldur", alv)
-        local heal = GetAbilityField(UAS_id_arcanefount, "herodur", alv) / 2 
+        -- Ability stats
+        local this = ArcaneFountSpellObj:NewInstance()
+        local heal = this.herodur / 2 
         local cpheal = (alv+1)/4 -- for 0.5, 1., 1.5 per second 
-        local aoe = GetAbilityField(UAS_id_arcanefount, "aoe", alv)
-        local x0, y0 = GetUnitX(caster), GetUnitY(caster)
-        local z0 = BlzGetUnitRealField(caster, UNIT_RF_FLY_HEIGHT)+60   -- how good this looks is going to be on a per-model basis, really
+        local x0, y0 = GetUnitX(this.caster), GetUnitY(this.caster)
+        local z0 = BlzGetUnitRealField(this.caster, UNIT_RF_FLY_HEIGHT) + 60   -- how good this looks is going to be on a per-model basis, really
 
         -- Objects
         local ug = CreateGroup()
@@ -36,10 +34,10 @@ do
         local special_refs = {}
 
         -- Tether init
-        GroupEnumUnitsInRange(ug, x0, y0, aoe, nil)
+        GroupEnumUnitsInRange(ug, x0, y0, this.aoe, nil)
         ForGroup(ug, function()
             local pu = GetEnumUnit()
-            if not IsUnitEnemy(pu, owner) then
+            if not IsUnitEnemy(pu, this.castplayer) then
                 local this_handle = GetHandleId(pu)
                 local x1, y1 = GetUnitX(pu), GetUnitY(pu)
                 lightning_refs[this_handle] = AddLightningEx("DRAL", false, x0, y0, z0, x1, y1, 50)
@@ -55,12 +53,12 @@ do
         local count=0
         local count_max = math.floor(0.5 / t_interval) -- healing occurs every 0.5 seconds
         TimerStart(t, t_interval, true, function()
-            local x0, y0 = GetUnitX(caster), GetUnitY(caster)
+            local x0, y0 = GetUnitX(this.caster), GetUnitY(this.caster)
             ForGroup(ug, function()
                 local pu = GetEnumUnit()
                 local this_handle = GetHandleId(pu)
                 local x1, y1 = GetUnitX(pu), GetUnitY(pu)
-                if (Distance(x0,x1, y0, y1) > aoe) or (IsUnitDeadBJ(pu)) then
+                if (Distance(x0,x1, y0, y1) > this.aoe) or (IsUnitDeadBJ(pu)) then
                     GroupRemoveUnit(ug, pu)
                     DestroyLightning(lightning_refs[this_handle])
                     DestroyEffect(special_refs[this_handle])
@@ -83,7 +81,7 @@ do
 
             -- Finish and clean up
             elapsed = elapsed + t_interval
-            if elapsed >= dur then
+            if elapsed >= this.dur then
                 PauseTimer(t)
                 DestroyTimer(t)
                 for k,v in pairs(lightning_refs) do
@@ -97,14 +95,5 @@ do
         end)
         -- END --
     end
-
-
-    ------ Create trigger ------
-    local function CreateCastTrigger()
-        local trg = CreateTrigger()
-        TriggerRegisterAnyUnitEventBJ(trg, EVENT_PLAYER_UNIT_SPELL_EFFECT)
-        TriggerAddAction(trg, ArcaneFountCast)
-    end
-
-    OnInit.trig(CreateCastTrigger)
+    ArcaneFountSpellObj:MakeTrigger(ArcaneFountCast)
 end
