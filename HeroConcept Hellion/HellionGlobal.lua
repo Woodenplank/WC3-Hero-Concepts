@@ -28,6 +28,7 @@ do
     -- Unit Type
     utype_Hellion       = FourCC('O001') -- the actual hero unit
     utype_FlameTornado  = FourCC('e001')
+    utype_PentagramDummy= FourCC('e002')
     Hellforge_utype     = FourCC('h005')
 
 
@@ -80,31 +81,28 @@ do
 
         -- ---------------------------- Testing solution --------------------------------
         local hero=nil
-        local forge_id=nil
+        local id_forge=nil
 
-        local cond = Condition(function() return (GetUnitTypeId(GetFilterUnit()) == utype_Hellion) end)
         local ug = CreateGroup()
-        GroupEnumUnitsOfPlayer(ug, Player(0), cond)
+        GroupEnumUnitsOfPlayer(ug, Player(0), nil)
         ForGroup(ug, function()
             local pu = GetEnumUnit()
             if (GetUnitTypeId(pu) == utype_Hellion) then
                 hero = pu
-            elseif GetUnitTypeId(GetFilterUnit()) == Hellforge_utype then
+            elseif GetUnitTypeId(pu) == Hellforge_utype then
                 id_forge = GetHandleId(pu)
             end
         end)
         DestroyGroup(ug)
-        DestroyCondition(cond)
         -----------------------------------------------------------------------------------
-        
-        table.insert(HEL_forgelinks, {"herohandle" = hero, "forgeid" = id_forge, "grouphandle" = HFresearchBlockers})
+        table.insert(HEL_forgelinks, {["herohandle"] = hero, ["forgehandle"] = id_forge, ["grouphandle"] = HFresearchBlockers})
+        print("Setup successful")
     end
 
     -- Build Trigger --
-    -- Technically, this could point to a nil unit group if called within 0.01 seconds of elapsed game time --- TOO BAD!
     local function CreateSetupTrig()
         local tr = CreateTrigger()
-        TriggerRegisterTimerEventSingle(tr, 0.01 )
+        TriggerRegisterPlayerEventEndCinematic(tr, Player(0)) -- player 1 (Red) presses "ESC"
         TriggerAddAction(tr, SetupResearchUnits)
     end
     OnInit.final(CreateSetupTrig)

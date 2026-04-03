@@ -1,3 +1,6 @@
+-- requires HellionGlobal.lua
+-- requires SpellTemplate.lua
+-- requires QuickHeal.lua
 do
 --[[
     Srikes a dark taint into the land beneath the Hellion's feet, dealing 200 damage to all nearby enemies; causing additional damage over time to enemies who remain. 
@@ -11,73 +14,57 @@ do
     local function DomSinCast()
         -- Exit early if this is the wrong ability
         local abilId = GetSpellAbilityId()
-        if abilId ~= HEL_id_domsin then
+        if abilId ~= HEL_domainSpell.id then
             return
         end
         
-            -- Getters
-        local u = GetTriggerUnit()
-        local x = GetUnitX(u)
-        local y = GetUnitY(u)
-        local alv = GetUnitAbilityLevel(u, HEL_id_domsin) - 1
-
-        -- Stats
-        local dmg = GetAbilityField(HEL_id_domsin, "herodur", alv)
-        local dmg_instant=200
-        local aoe = GetAbilityField(HEL_id_domsin, "area", alv)
-        local heal= GetAbilityField(HEL_id_domsin, "range", alv)
-        local dur = GetAbilityField(HEL_id_domsin, "normaldur", alv)
+        -- Ability stats
+        local this = HEL_domainSpell:NewInstance()
+        local dmg = this.herodur
+        local dmg_instant = 200
+        local heal = this.range
+        local dur = this.normaldur
 
         -- Objects
         local ug = CreateGroup()
         local t = CreateTimer()
 
         -- Dummy buffer
-        local dummy = CreateUnit(GetOwningPlayer(u), FourCC('e002'), x, y, 270)
-        SetUnitAbilityLevel(dummy, HEL_id_domsinbuff, alv+1)
+        local dummy = CreateUnit(this.castplayer, utype_PentagramDummy, this.cast_x, this.cast_y, 270)
+        SetUnitAbilityLevel(dummy, HEL_domainbuff, this.alv+1)
 
         -- Sinhammer mod
-        local SH_alv = GetUnitAbilityLevel(u, SHbuff_abilId)
-        local SHbool, SHdmgfactor, SHhealfactor = GetSinhammerMod(SH_alv)
+        local SHbool, SHdmgfactor, SHhealfactor = GetSinhammerMod(this.caster)
         if (SHbool) then
             dmg = dmg*SHdmgfactor
-            dmg_instant = dmg_instant*SHdmgfactor
         end
 
         -- Area burst
-        GroupEnumUnitsInRange(ug, x, y, aoe, nil)
-        if (SHbool) then --with Sinhammer healing
-            ForGroup(ug, function()
-                local enemy = GetEnumUnit()
-                if IsUnitEnemy(u, GetOwningPlayer(enemy)) then
-                    UnitDamageTarget(u, enemy, dmg_instant, true, false, ATTACK_TYPE_NORMAL, DAMAGE_TYPE_NORMAL, nil)
-                    QuickHealUnit(u, SHhealfactor*dmg_instant)
-                end
-            end)
-        else -- without Sinhammer healing
-            ForGroup(ug, function()
-                local enemy = GetEnumUnit()
-                if IsUnitEnemy(u, GetOwningPlayer(enemy)) then
-                    UnitDamageTarget(u, enemy, dmg_instant, true, false, ATTACK_TYPE_NORMAL, DAMAGE_TYPE_NORMAL, nil)
-                end
-            end)
-        end
+        GroupEnumUnitsInRange(ug, this.cast_x, this.cast_y, this.aoe, nil)
+        ForGroup(ug, function()
+            local pu = GetEnumUnit()
+            if IsUnitEnemy(pu, this.castplayer) then
+                UnitDamageTarget(this.caster, pu, dmg_instant, true, false, ATTACK_TYPE_NORMAL, DAMAGE_TYPE_NORMAL, nil)
+                --Sinhammer healing
+                if (SHbool) then QuickHealUnit(this.caster, SHhealfactor*dmg_instant) end
+            end
+        end)
         
         -- Periodic effect
-        TimerStart(t, 1, true, function()
+        TimerStart(t, 1.0, true, function()
             -- Area damage
-            GroupEnumUnitsInRange(ug, x, y, aoe, nil)
+            GroupEnumUnitsInRange(ug, this.cast_x, this.cast_y, this.aoe, nil)
             ForGroup(ug, function()
-                local enemy = GetEnumUnit()
-                if IsUnitEnemy(u, GetOwningPlayer(enemy)) then
-                    UnitDamageTarget(u, enemy, dmg, true, false, ATTACK_TYPE_NORMAL, DAMAGE_TYPE_NORMAL, nil)
+                local pu = GetEnumUnit()
+                if IsUnitEnemy(pu, this.castplayer) then
+                    UnitDamageTarget(this.caster, pu, dmg, true, false, ATTACK_TYPE_NORMAL, DAMAGE_TYPE_NORMAL, nil)
                     --Sinhammer healing
-                    if (SHbool) then QuickHealUnit(u, SHhealfactor*dmg) end
+                    if (SHbool) then QuickHealUnit(this.caster, SHhealfactor*dmg) end
                 end
             end)
             -- Self heal (if within aura range)
-            if Distance(x,GetUnitX(u),y,GetUnitY(u)) <= 400 then
-                QuickHealUnit(u, heal)
+            if Distance(this.cast_x, GetUnitX(this.caster), this.cast_y, GetUnitY(this.caster)) <= 400 then
+                QuickHealUnit(this.caster, heal)
             end
 
             -- Check for ending
@@ -91,13 +78,5 @@ do
         end)
     -- END --
     end
-
-    local function CreateDomSinTrig()
-        local tr = CreateTrigger()
-        TriggerRegisterAnyUnitEventBJ(tr, EVENT_PLAYER_UNIT_SPELL_EFFECT)
-        TriggerAddAction(tr, DomSinCast)
-    end
-
-    OnInit.trig(CreateDomSinTrig)
-
+    HEL_domainSpell:MakeTrigger(DomSinCast)
 end

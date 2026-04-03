@@ -1,3 +1,6 @@
+-- requires HellionGlobal.lua
+-- requires SpellTemplate.lua
+-- requires QuickHeal.lua
 do
 	--[[
 		Slams a target foe in melee range, dealing instant damage (|cffdbb8eb+120% Focus|r). If 3 or more enemies are within range of the main target the damage is doubled, but is distributed evenly among all targets.
@@ -6,11 +9,16 @@ do
 		|cffffcc00Level 2|r - <A00I:Ancl,HeroDur2> damage.
 		|cffffcc00Level 3|r - <A00I:Ancl,HeroDur3> damage.
 	]]
-	local function HellfuryStrikeu()
+	local function HellfuryStrike()
 		local abilId = GetSpellAbilityId()
-		if abilId ~= HEL_id_hfstrike then
+		if abilId ~= HEL_hfstrikeSpell.id then
 			return
 		end
+
+		-- Ability stats
+		local this = HEL_hfstrikeSpell:NewInstance()
+		local dmg = this.herodur
+
 
 		-- Getters
 		local u = GetTriggerUnit()
@@ -20,58 +28,56 @@ do
 		local alv = GetUnitAbilityLevel(u, HEL_id_hfstrike) - 1
 
 		-- Hellforge mod (bool)
-		local ArmsOfAstaroth = ( GetUnitAbilityLevel(u, HellforgedSpells["ArmsOfAstaroth"]) > 0 )
+		local ArmsOfAstaroth = (GetUnitAbilityLevel(this.caster, HellforgedSpells["ArmsOfAstaroth"])>0)
 
 		-- Ability stats
 		local dmg = GetAbilityField(HEL_id_hfstrike, "herodur", alv)
 		local aoe = GetAbilityField(HEL_id_hfstrike, "area", alv)
 		
-		-- Sinhammer mod
-        local SH_alv = GetUnitAbilityLevel(u, SHbuff_abilId)
-        local SHbool, SHdmgfactor, SHhealfactor = GetSinhammerMod(SH_alv)
+        -- Sinhammer mod
+        local SHbool, SHdmgfactor, SHhealfactor = GetSinhammerMod(this.caster)
         if (SHbool) then
             dmg = dmg*SHdmgfactor
         end
 
 		-- Objects
 		local ug = CreateGroup()
-		local cond = Condition(function() return
-			IsUnitEnemy(GetFilterUnit(),GetOwningPlayer(u))
-			and not IsUnitType(GetFilterUnit(), UNIT_TYPE_DEAD)
-			and not IsUnitType(GetFilterUnit(), UNIT_TYPE_STRUCTURE)
-			and not BlzIsUnitInvulnerable(GetFilterUnit())
+		local cond = Condition(function() 
+			local fu = GetFilterUnit()
+			return IsUnitEnemy(fu, this.castplayer)
+			and not IsUnitType(fu, UNIT_TYPE_DEAD)
+			and not IsUnitType(fu, UNIT_TYPE_STRUCTURE)
+			and not BlzIsUnitInvulnerable(fu)
 		end)
 		
-		GroupEnumUnitsInRange(ug, x, y, aoe, cond)
+		GroupEnumUnitsInRange(ug, this.targ_x, this.targ_y, this.aoe, cond)
 		local count = CountUnitsInGroup(ug)
 		if (count >= 4) then
-			-- aoe spread damage
 			dmg = (dmg*2)/count
 			ForGroup(ug, function()
 				pu = GetEnumUnit()
-				UnitDamageTarget(u, pu, dmg, true, false, ATTACK_TYPE_HERO, DAMAGE_TYPE_ENHANCED, nil)
-				if (SHbool) then QuickHealUnit(u, SHhealfactor*dmg) end-- Sinhammer healing
+				UnitDamageTarget(this.caster, pu, dmg, true, false, ATTACK_TYPE_HERO, DAMAGE_TYPE_ENHANCED, nil)
 				DestroyEffect(AddSpecialEffect("Abilities\\Weapons\\DemolisherFireMissile\\DemolisherFireMissile.mdl", GetUnitX(pu) , GetUnitY(pu)))
+				if (SHbool) then QuickHealUnit(this.caster, SHhealfactor*dmg) end-- Sinhammer healing
 			end)
 		else
-			-- single target damage
-			UnitDamageTarget(u, targ, dmg, true, false, ATTACK_TYPE_HERO, DAMAGE_TYPE_ENHANCED, nil)
-			if (SHbool) then QuickHealUnit(u, SHhealfactor*dmg) end-- Sinhammer healing
+			UnitDamageTarget(this.caster, this.target, dmg, true, false, ATTACK_TYPE_HERO, DAMAGE_TYPE_ENHANCED, nil)
 			DestroyEffect(AddSpecialEffect("Abilities\\Weapons\\DemolisherFireMissile\\DemolisherFireMissile.mdl", x, y))
+			if (SHbool) then QuickHealUnit(u, SHhealfactor*dmg) end-- Sinhammer healing
 		end
 		
 		if ArmsOfAstaroth then
 			local t = CreateTimer()
-			local dur = 5.
+			local dur = 5.0
 			dmg = dmg/20 -- dmg * 0.25 / 5
-			TimerStart(t, 1, true, function()
+			TimerStart(t, 1.0, true, function()
 				ForGroup(ug, function()
 					pu = GetEnumUnit()
-					UnitDamageTarget(u, pu, dmg, true, false, ATTACK_TYPE_NORMAL, DAMAGE_TYPE_ENHANCED, nil)
-					--Sinhammer healing
-                	if (SHbool) then QuickHealUnit(u, SHhealfactor*dmg) end
+					UnitDamageTarget(this.caster, pu, dmg, true, false, ATTACK_TYPE_NORMAL, DAMAGE_TYPE_ENHANCED, nil)
 					-- TODO: burning over time effect? Sadly immolation doesn't work when instantly destroyed
+                	if (SHbool) then QuickHealUnit(this.caster, SHhealfactor*dmg) end --Sinhammer healing
 				end)
+
 				-- Attempt to end DoT
 				dur = dur - 1
 				if (dur<=0) then
@@ -83,16 +89,10 @@ do
 		else
 			DestroyGroup(ug)
 		end
+
 		-- Misc. Cleanup
 		DestroyCondition(cond)
 		-- END --
 	end
-
-	local function CreateHfStrikeTrig()
-		local tr = CreateTrigger()
-		TriggerRegisterAnyUnitEventBJ(tr, EVENT_PLAYER_UNIT_SPELL_EFFECT)
-		TriggerAddAction(tr, HellfuryStrikeu)
-	end
-
-	OnInit.trig(CreateHfStrikeTrig)
+	HEL_hfstrikeSpell:MakeTrigger(HellfuryStrike)
 end

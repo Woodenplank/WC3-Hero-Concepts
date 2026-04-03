@@ -76,12 +76,5 @@ do
         end)
         -- END --
     end
-
-    -- Build trigger --
-    local function CreateEmberstormTrig()
-        local tr = CreateTrigger()
-        TriggerRegisterAnyUnitEventBJ(tr, EVENT_PLAYER_UNIT_SPELL_EFFECT)
-        TriggerAddAction(tr, EmberstormCast)
-    end
-    OnInit.trig(CreateEmberstormTrig)
+    HEL_emberSpell:MakeTrigger(EmberstormCast)
 end

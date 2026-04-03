@@ -1,3 +1,7 @@
+-- requires HellionGlobal.lua
+-- requires SpellTemplate.lua
+-- requires QuickHeal.lua
+-- requires AbilityPowerScale.lua
 do
 --[[
     Emits 7 tongues of a flames in a circle around the hero, dealing damage (+Focus) to enemies on contact.
@@ -5,19 +9,15 @@ do
     local function TonguesOfFlameMain()
         -- Exit early if this is the wrong ability
         local abilId = GetSpellAbilityId()
-        if abilId ~= HEL_id_flametongues then
+        if abilId ~= HEL_ftonguesSpell.id then
             return
         end
-        -- Getters --
-        local u = GetTriggerUnit()
-        local x = GetUnitX(u)
-        local y = GetUnitY(u)
-        local alv = GetUnitAbilityLevel(u, HEL_id_flametongues) - 1
 
         -- Ability stats
-        local dmg = GetAbilityField(HEL_id_flametongues, "herodur", alv) + addSP(u, 2.0)
-        local area= GetAbilityField(HEL_id_flametongues, "aoe", alv)
-        local tongues=7
+        local this = HEL_ftonguesSpell:NewInstance()
+        local dmg = this.herodur + addSP(this.caster, 2.0)
+        local area = this.aoe
+        local tongues = 7
         local tonguesteps = (2*math.pi)/tongues
 
         -- Objects
@@ -25,8 +25,7 @@ do
         local t = CreateTimer()
         
         -- Sinhammer mod
-        local SH_alv = GetUnitAbilityLevel(u, SHbuff_abilId)
-        local SHbool, SHdmgfactor, SHhealfactor = GetSinhammerMod(SH_alv)
+        local SHbool, SHdmgfactor, SHhealfactor = GetSinhammerMod(this.caster)
         if (SHbool) then
             dmg = dmg*SHdmgfactor
         end
@@ -36,28 +35,29 @@ do
         TimerStart(t, 0.15, true, function()
             -- Protect units from being damage multiple times in one flame round
             local protgroup = CreateGroup()
+            
             -- Draw a 'circle' of flames at current distance
             local ang = 0
-            while (ang < 2 * math.pi)
-            do
-                -- SFX
-                local new_x = x + dist * math.cos(ang)
-                local new_y = y + dist * math.sin(ang)
-		        DestroyEffect(AddSpecialEffect("Abilities\\Weapons\\RedDragonBreath\\RedDragonMissile.mdl", new_x , new_y))
-                -- area damage around each flame spout
+            while (ang < 2 * math.pi) do
+                local new_x = this.cast_x + dist * math.cos(ang)
+                local new_y = this.cast_y + dist * math.sin(ang)
+                ang = ang + tonguesteps
+		        
+                -- Damage enemies around each flamesprout
+                DestroyEffect(AddSpecialEffect("Abilities\\Weapons\\RedDragonBreath\\RedDragonMissile.mdl", new_x , new_y))
                 GroupEnumUnitsInRange(ug, new_x, new_y, 150, nil)
                 ForGroup(ug, function()
-                    local enemy = GetEnumUnit()
-                    if (IsUnitEnemy(u, GetOwningPlayer(enemy)) and not IsUnitInGroup(enemy, protgroup)) then
-                        UnitDamageTarget(u, enemy, dmg, true, false, ATTACK_TYPE_NORMAL, DAMAGE_TYPE_NORMAL, nil)
-                        GroupAddUnit(protgroup, enemy)
+                    local pu = GetEnumUnit()
+                    if (IsUnitEnemy(pu, this.castplayer) and not IsUnitInGroup(pu, protgroup)) then
+                        UnitDamageTarget(this.caster, pu, dmg, true, false, ATTACK_TYPE_NORMAL, DAMAGE_TYPE_NORMAL, nil)
+                        GroupAddUnit(protgroup, pu)
                         --Sinhammer healing
-                        if (SHbool) then QuickHealUnit(u, SHhealfactor*dmg) end
+                        if (SHbool) then QuickHealUnit(this.caster, SHhealfactor*dmg) end
                     end
                 end)
-                ang = ang + tonguesteps
             end
             DestroyGroup(protgroup)
+
             -- Advance distance ; Check if we've reached the max
             dist = dist + 100
             if (dist >= area) then
@@ -68,12 +68,5 @@ do
         end)
         -- END --
     end
-    
-    local function CreateTonguesOfFlameTrig()
-        local tr = CreateTrigger()
-        TriggerRegisterAnyUnitEventBJ(tr, EVENT_PLAYER_UNIT_SPELL_EFFECT)
-        TriggerAddAction(tr, TonguesOfFlameMain)
-    end
-
-    OnInit.trig(CreateTonguesOfFlameTrig)
+    HEL_ftonguesSpell:MakeTrigger(TonguesOfFlameMain)
 end

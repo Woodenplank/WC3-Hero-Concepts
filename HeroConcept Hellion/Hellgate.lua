@@ -36,7 +36,6 @@ do
                 if (SHbool) then QuickHealUnit(this.caster, SHhealfactor*dmg) end
             end
         end)
-
         DestroyGroup(ug)
         -- END --
     end
